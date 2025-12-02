@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
-
+     use HasRoles;
     /**
      * The attributes that are mass assignable.
      *
@@ -48,5 +51,23 @@ class User extends Authenticatable
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
         ];
+    }
+    public function getArrayPermissions(){
+        $response = [];
+        if(self::hasRole('root')){
+            $permissions = Permission::get();
+        }else{
+            $permissions = self::getAllPermissions();
+        }
+        foreach($permissions as $p){
+            $slug = Str::slug($p->section_name);
+            $response[$slug]['section_name'] = $p->section_name;
+            $response[$slug]['permissions'][] = [
+                'key' => $slug,
+                'description' => $p->description,
+                'slug' => $p->name
+            ];
+        }
+        return $response;
     }
 }
