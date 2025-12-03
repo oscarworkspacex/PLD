@@ -1,0 +1,41 @@
+version: '4'
+name: automatizacion
+services:
+    ####################################################################################################
+    # PHP
+    ####################################################################################################
+    php:
+        container_name: php_automatizacion
+        build: .docker/php
+        volumes:
+            - .:/var/www:cached
+            - ./supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+        deploy:
+            resources:
+                limits:
+                    memory: 512M
+                    cpus: "1.0"
+        # restart: always
+    ####################################################################################################
+    # Nginx
+    ####################################################################################################
+    nginx:
+        container_name: nginx_automatizacion
+        image: nginx
+        ports:
+            - 0.0.0.0:7654:80
+        volumes:
+            - .:/var/www
+            - .docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - .docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+        depends_on:
+            - php
+        deploy:
+            resources:
+                limits:
+                    memory: 512M
+                    cpus: "1.0"
+        # restart: always
+networks:
+  oxford_net:
+    driver: bridge

@@ -39,11 +39,6 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-
         if (!Permission::where('name', 'User create')->exists())
         {
             Permission::create(['name' => 'User create', 'description' => 'Create users', 'section_name' => 'Users']);
@@ -53,8 +48,20 @@ class DatabaseSeeder extends Seeder
             Permission::create(['name' => 'User update', 'description' => 'Update users', 'section_name' => 'Users']);
             Permission::create(['name' => 'User delete', 'description' => 'Delete users', 'section_name' => 'Users']);
         }
+
+        if (!Permission::where('name', 'Excel create')->exists())
+        {
+            Permission::create(['name' => 'Excel create', 'description' => 'Create excel', 'section_name' => 'Excel']);
+            Permission::create(['name' => 'Excel read', 'description' => 'Read excel', 'section_name' => 'Excel']);
+            Permission::create(['name' => 'Excel update', 'description' => 'Update excel', 'section_name' => 'Excel']);
+            Permission::create(['name' => 'Excel delete', 'description' => 'Delete excel', 'section_name' => 'Excel']);
+        }
+
         if (!Role::where('name', 'root')->exists()) {
             $role = Role::create(['name' => 'root']);
+        }
+        if (!Role::where('name', 'customer')->exists()) {
+            $role = Role::create(['name' => 'customer']);
         }
         if (!User::where('email', 'root@email.com')->exists())
         {
@@ -65,6 +72,16 @@ class DatabaseSeeder extends Seeder
                 'status' => 1,
             ]);
             $role->assignRole('root');
+        }
+        if (!User::where('email', 'customer@email.com')->exists())
+        {
+            $role = User::create([
+                'name' => 'Cliente',
+                'email' => 'customer@email.com',
+                'password' => Hash::make('12345678'),
+                'status' => 1,
+            ]);
+            $role->assignRole('customer');
         }
     }
 }
