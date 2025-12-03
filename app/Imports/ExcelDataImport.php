@@ -28,7 +28,7 @@ class ExcelDataImport implements ToArray, WithChunkReading, WithBatchInserts
     public function array(array $rows): void
     {
         $dataToInsert = [];
-
+        set_time_limit(0);
         foreach ($rows as $row) {
             // Procesa cada celda de la fila
             foreach ($row as $cellValue) {

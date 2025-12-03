@@ -12,24 +12,14 @@
                             Seleccionar archivo Excel
                         </label>
                         <div class="relative">
-                            <input 
-                                id="file" 
-                                type="file" 
-                                ref="fileInput" 
-                                @change="handleFileChange" 
+                            <input id="file" type="file" ref="fileInput" @change="handleFileChange"
                                 accept=".xlsx,.xls,.csv"
                                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                :disabled="uploading" 
-                            />
-                            <button
-                                type="button"
-                                @click="$refs.fileInput.click()"
-                                :disabled="uploading"
-                                class="w-full bg-blue-50 text-blue-700 py-2 px-4 rounded-full
+                                :disabled="uploading" />
+                            <button type="button" @click="$refs.fileInput.click()" :disabled="uploading" class="w-full bg-blue-50 text-blue-700 py-2 px-4 rounded-full
                                        border border-blue-200 hover:bg-blue-100
                                        disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed
-                                       transition duration-200 font-semibold text-sm"
-                            >
+                                       transition duration-200 font-semibold text-sm">
                                 Seleccione Excel
                             </button>
                         </div>
@@ -68,7 +58,7 @@
                             </svg>
                             Procesando...
                         </span>
-                        <span v-else>Subir y Procesar Archivo</span>
+                        <span v-else style="color: white !important;">Subir y procesar archivo</span>
                     </button>
                 </form>
             </div>
@@ -125,22 +115,60 @@ export default {
                 this.message = null;
             }
         },
+        getCsrfToken() {
+            const metaTag = document.querySelector('meta[name="csrf-token"]');
+            if (metaTag) {
+                return metaTag.getAttribute('content');
+            }
+            const name = 'XSRF-TOKEN=';
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.indexOf(name) === 0) {
+                    return decodeURIComponent(cookie.substring(name.length));
+                }
+            }
+            return null;
+        },
         async uploadFile() {
             this.message = null;
             if (!this.selectedFile) {
                 this.showMessage('Por favor seleccione un archivo', 'error');
                 return;
             }
+            console.log('Archivo seleccionado:', {
+                name: this.selectedFile.name,
+                size: this.selectedFile.size,
+                type: this.selectedFile.type,
+                sizeMB: (this.selectedFile.size / (1024 * 1024)).toFixed(2) + ' MB'
+            });
+
             this.uploading = true;
             this.message = null;
             const formData = new FormData();
             formData.append('file', this.selectedFile);
+            console.log('FormData entries:');
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ', pair[1]);
+            }
+
+            const csrfToken = this.getCsrfToken();
+            if (!csrfToken) {
+                this.showMessage('Error: No se pudo obtener el token de seguridad', 'error');
+                this.uploading = false;
+                return;
+            }
+
             try {
                 const response = await axios.post(admin.excel.upload.url(), formData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
                         'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrfToken,
                     },
+                    transformRequest: [(data) => {
+                        return data;
+                    }],
+                    timeout: 300000, // 5 minutos para archivos grandes
                 });
                 if (response.data.success) {
                     this.showMessage(`Archivo "${response.data['data'].excel_name}" procesado correctamente.`, 'success');
@@ -150,17 +178,68 @@ export default {
                     this.showMessage(response.data.message || 'Error al procesar el archivo', 'error');
                 }
             } catch (error) {
+                console.error('=== ERROR DETALLADO ===');
+                console.error('Error completo:', error);
+                console.error('Error response data:', error.response?.data);
+                console.error('Error response status:', error.response?.status);
+                console.error('Archivo enviado:', {
+                    name: this.selectedFile?.name,
+                    size: this.selectedFile?.size,
+                    type: this.selectedFile?.type
+                });
+                console.error('========================');
+
                 if (error.response) {
-                    const errorMessage = error.response.data?.message
-                        || error.response.data?.error
-                        || 'Error al procesar el archivo';
-                    this.showMessage(errorMessage, 'error');
+                    if (error.response.status === 422) {
+                        const responseData = error.response.data;
+                        let errorMessages = [];
+
+                        if (responseData.errors) {
+                            if (responseData.errors.file) {
+                                errorMessages = Array.isArray(responseData.errors.file)
+                                    ? responseData.errors.file
+                                    : [responseData.errors.file];
+                            } else {
+                                Object.values(responseData.errors).forEach(err => {
+                                    if (Array.isArray(err)) {
+                                        errorMessages.push(...err);
+                                    } else {
+                                        errorMessages.push(err);
+                                    }
+                                });
+                            }
+                        } else if (responseData.message) {
+                            if (Array.isArray(responseData.message)) {
+                                errorMessages = responseData.message;
+                            } else {
+                                errorMessages = [responseData.message];
+                            }
+                        }
+
+                        let finalMessage = '';
+                        if (errorMessages.length > 0) {
+                            finalMessage = errorMessages.join(', ');
+                        } else if (responseData.message === 'The file failed to upload.' || responseData.message === 'El archivo no se recibió correctamente.') {
+                            finalMessage = 'El archivo no se pudo subir. Verifique que el archivo no esté corrupto y que su conexión sea estable.';
+                        } else {
+                            finalMessage = 'Error de validación. Verifique que el archivo sea .xlsx, .xls o .csv y no exceda 20MB.';
+                        }
+
+                        this.showMessage(finalMessage, 'error');
+                    } else {
+                        const errorMessage = error.response.data?.message
+                            || (Array.isArray(error.response.data?.message)
+                                ? error.response.data.message.join(', ')
+                                : 'Error al procesar el archivo');
+                        this.showMessage(errorMessage, 'error');
+                    }
                 } else if (error.request) {
-                    this.showMessage('Error de conexión. Por favor intente nuevamente.', 'error');
+                    this.showMessage('Error de conexión. El servidor no respondió. Verifique su conexión a internet.', 'error');
+                } else if (error.code === 'ECONNABORTED') {
+                    this.showMessage('La subida del archivo tardó demasiado. Intente con un archivo más pequeño o verifique su conexión.', 'error');
                 } else {
-                    this.showMessage('Error inesperado. Por favor intente nuevamente.', 'error');
+                    this.showMessage('Error inesperado: ' + (error.message || 'Error desconocido'), 'error');
                 }
-                console.error('Error:', error);
             } finally {
                 this.uploading = false;
             }
@@ -168,9 +247,6 @@ export default {
         showMessage(text, type) {
             this.message = text;
             this.messageType = type;
-            // setTimeout(() => {
-            //     this.message = null;
-            // }, 5000);
         },
         formatFileSize(bytes) {
             if (bytes === 0) return '0 Bytes';

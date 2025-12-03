@@ -53,6 +53,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard().url,
     },
 ];
+
 </script>
 
 <template>
