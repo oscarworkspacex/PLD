@@ -89,45 +89,45 @@
     }
 
     .title-system {
-        @apply text-3xl font-bold text-gray-800 dark:text-white md:text-4xl;
+        @apply text-3xl font-bold text-white md:text-4xl;
     }
 }
 
 :root {
-    --background: hsl(0 0% 100%);
-    --foreground: hsl(0 0% 3.9%);
-    --card: hsl(0 0% 100%);
-    --card-foreground: hsl(0 0% 3.9%);
-    --popover: hsl(0 0% 100%);
-    --popover-foreground: hsl(0 0% 3.9%);
-    --primary: hsl(0 0% 9%);
-    --primary-foreground: hsl(0 0% 98%);
-    --secondary: hsl(0 0% 92.1%);
-    --secondary-foreground: hsl(0 0% 9%);
-    --muted: hsl(0 0% 96.1%);
-    --muted-foreground: hsl(0 0% 45.1%);
-    --accent: hsl(0 0% 96.1%);
-    --accent-foreground: hsl(0 0% 9%);
+    --background: hsl(222.2 84% 4.9%);
+    --foreground: hsl(210 40% 98%);
+    --card: hsl(217.2 32.6% 17.5%);
+    --card-foreground: hsl(210 40% 98%);
+    --popover: hsl(222.2 84% 4.9%);
+    --popover-foreground: hsl(210 40% 98%);
+    --primary: hsl(210 40% 98%);
+    --primary-foreground: hsl(222.2 47.4% 11.2%);
+    --secondary: hsl(217.2 32.6% 17.5%);
+    --secondary-foreground: hsl(210 40% 98%);
+    --muted: hsl(217.2 32.6% 17.5%);
+    --muted-foreground: hsl(215 20.2% 65.1%);
+    --accent: hsl(217.2 32.6% 17.5%);
+    --accent-foreground: hsl(210 40% 98%);
     --destructive: hsl(0 84.2% 60.2%);
     --destructive-foreground: hsl(0 0% 98%);
-    --border: hsl(0 0% 92.8%);
-    --input: hsl(0 0% 89.8%);
-    --ring: hsl(0 0% 3.9%);
+    --border: hsl(217.2 32.6% 17.5%);
+    --input: hsl(217.2 32.6% 17.5%);
+    --ring: hsl(217.2 91.2% 59.8%);
     --chart-1: hsl(12 76% 61%);
     --chart-2: hsl(173 58% 39%);
     --chart-3: hsl(197 37% 24%);
     --chart-4: hsl(43 74% 66%);
     --chart-5: hsl(27 87% 67%);
     --radius: 0.5rem;
-    --sidebar-background: hsl(0 0% 98%);
-    --sidebar-foreground: hsl(240 5.3% 26.1%);
-    --sidebar-primary: hsl(0 0% 10%);
-    --sidebar-primary-foreground: hsl(0 0% 98%);
-    --sidebar-accent: hsl(0 0% 94%);
-    --sidebar-accent-foreground: hsl(0 0% 30%);
-    --sidebar-border: hsl(0 0% 91%);
+    --sidebar-background: hsl(222.2 84% 4.9%);
+    --sidebar-foreground: hsl(210 40% 98%);
+    --sidebar-primary: hsl(210 40% 98%);
+    --sidebar-primary-foreground: hsl(222.2 84% 4.9%);
+    --sidebar-accent: hsl(217.2 32.6% 17.5%);
+    --sidebar-accent-foreground: hsl(210 40% 98%);
+    --sidebar-border: hsl(217.2 32.6% 17.5%);
     --sidebar-ring: hsl(217.2 91.2% 59.8%);
-    --sidebar: hsl(0 0% 98%);
+    --sidebar: hsl(222.2 84% 4.9%);
 }
 
 .dark {
@@ -173,4 +173,103 @@
     body {
         @apply bg-background text-foreground;
     }
+}
+
+/* Ant Design table customizations */
+.ant-table-expanded-row-fixed {
+    color: rgba(0, 15, 20, 0.25);
+}
+
+/* Ant Design pagination customizations */
+.ant-pagination {
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.ant-pagination-total-text {
+    color: rgba(255, 250, 250, 0.88);
+}
+
+.ant-pagination a {
+    color: rgba(255, 255, 255, 0.88);
+}
+
+/* Dashboard jade-blue table theme */
+.dashboard-jade-table .ant-table {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(45, 160, 164, 0.45);
+    box-shadow: 0 18px 40px rgba(5, 28, 52, 0.28);
+    background: rgba(5, 41, 55, 0.2);
+}
+
+.dashboard-jade-table .ant-table-container {
+    border-inline-start: 0 !important;
+    border-top: 0 !important;
+}
+
+.dashboard-jade-table .ant-table-thead > tr > th {
+    color: #e7fbff !important;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: linear-gradient(135deg, #0e5f85 0%, #0f8b8d 52%, #13b8a6 100%) !important;
+    border-bottom: 1px solid rgba(127, 244, 214, 0.42) !important;
+}
+
+.dashboard-jade-table .ant-table-tbody > tr > td {
+    color: #d8efff;
+    background: rgba(9, 42, 67, 0.78);
+    border-bottom: 1px solid rgba(63, 185, 202, 0.2) !important;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.dashboard-jade-table .ant-table-tbody > tr:nth-child(even) > td {
+    background: rgba(13, 56, 83, 0.86);
+}
+
+.dashboard-jade-table .ant-table-tbody > tr:hover > td {
+    background: rgba(27, 106, 127, 0.95) !important;
+}
+
+.dashboard-jade-table .ant-table-placeholder .ant-table-cell {
+    color: rgba(222, 250, 255, 0.85) !important;
+    background: rgba(9, 60, 88, 0.86) !important;
+}
+
+.dashboard-jade-table .ant-empty-description {
+    color: rgba(224, 255, 246, 0.82) !important;
+}
+
+.dashboard-jade-pagination .ant-pagination-total-text {
+    color: #b8f4ff !important;
+    font-weight: 600;
+}
+
+.dashboard-jade-pagination .ant-pagination-item,
+.dashboard-jade-pagination .ant-pagination-prev .ant-pagination-item-link,
+.dashboard-jade-pagination .ant-pagination-next .ant-pagination-item-link {
+    border-color: rgba(74, 191, 198, 0.4) !important;
+    background: rgba(9, 52, 74, 0.92) !important;
+}
+
+.dashboard-jade-pagination .ant-pagination-item a,
+.dashboard-jade-pagination .ant-pagination-prev .ant-pagination-item-link,
+.dashboard-jade-pagination .ant-pagination-next .ant-pagination-item-link {
+    color: #d8f9ff !important;
+}
+
+.dashboard-jade-pagination .ant-pagination-item-active {
+    border-color: #2fd6be !important;
+    background: linear-gradient(135deg, #0d6d95 0%, #11a39c 100%) !important;
+    box-shadow: 0 0 0 3px rgba(47, 214, 190, 0.2);
+}
+
+.dashboard-jade-pagination .ant-select-selector {
+    border-color: rgba(74, 191, 198, 0.45) !important;
+    color: #d8f9ff !important;
+    background: rgba(8, 45, 66, 0.9) !important;
+}
+
+/* Custom input color override */
+input.w-full {
+    color: rgba(8, 31, 53, 1);
 }

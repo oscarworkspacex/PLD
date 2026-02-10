@@ -101,7 +101,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <div class="card mt-3 px-0">
                     <div class="card-body p-0">
                         <a-table :scroll="{ x: true }" :dataSource="data"
-                            :locale="{ emptyText: 'Sin datos' }" :pagination="false" bordered class="ant-table-striped"
+                            :locale="{ emptyText: 'Sin datos' }" :pagination="false" bordered
+                            class="ant-table-striped dashboard-jade-table"
                             :row-class-name="(_record, index) => index % 2 === 1 ? 'table-striped' : null">
                             <a-table-column key="id" title="ID" data-index="id" :sorter="false"
                                 :showSorterTooltip="false">
@@ -137,7 +138,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <div class="card-footer">
                         <div class="row">
                             <div class="col-12 text-center mt-5">
-                                <a-pagination :show-total="(total, range) =>
+                                <a-pagination class="dashboard-jade-pagination" :show-total="(total, range) =>
                                         `${range[0]} a ${range[1]} de ${numeralFormat(total, '0,0')} resultados`
                                     " :pageSizeOptions="['10', '20', '50', '100']" v-model:current="current"
                                     v-model:page-size="pageSize" :total="total" show-size-changer

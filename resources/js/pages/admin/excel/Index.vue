@@ -1,66 +1,153 @@
 <template>
-
     <Head title="Excel" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="max-w-4xl mx-auto p-6">
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-bold mb-6">Subir Archivo Excel</h2>
+        <div
+            class="relative min-h-[calc(100vh-8rem)] overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 px-6 py-10 text-slate-50"
+        >
+            <div
+                class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.15),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(129,140,248,0.16),transparent_35%),radial-gradient(circle_at_60%_70%,rgba(16,185,129,0.12),transparent_30%)]"
+            />
 
-                <form @submit.prevent="uploadFile" class="space-y-6">
+            <div class="relative mx-auto flex max-w-5xl flex-col gap-8">
+                <div class="flex flex-wrap items-start justify-between gap-4">
                     <div>
-                        <label for="file" class="block text-sm font-medium text-gray-700 mb-2">
-                            Seleccionar archivo Excel
-                        </label>
-                        <div class="relative">
-                            <input id="file" type="file" ref="fileInput" @change="handleFileChange"
-                                accept=".xlsx,.xls,.csv"
-                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                :disabled="uploading" />
-                            <button type="button" @click="$refs.fileInput.click()" :disabled="uploading" class="w-full bg-blue-50 text-blue-700 py-2 px-4 rounded-full
-                                       border border-blue-200 hover:bg-blue-100
-                                       disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed
-                                       transition duration-200 font-semibold text-sm">
-                                Seleccione Excel
-                            </button>
+                        <p class="text-xs uppercase tracking-[0.25em] text-cyan-200/80">
+                            Rusconi · Ingesta de datos
+                        </p>
+                        <h1 class="mt-2 text-3xl font-bold text-white lg:text-4xl">
+                            Subir y procesar archivo Excel
+                        </h1>
+                        <p class="mt-2 max-w-2xl text-sm text-slate-300/90">
+                            Valida el archivo antes de subirlo. Aceptamos .xlsx, .xls y .csv
+                            hasta 20MB.
+                        </p>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs text-slate-200 shadow-lg shadow-cyan-500/10 backdrop-blur">
+                        <div class="flex items-center gap-2">
+                            <span class="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_0_4px_rgba(16,185,129,0.2)]" />
+                            Operativo
                         </div>
-                        <p class="mt-1 text-sm text-gray-500">
-                            Formatos permitidos: .xlsx, .xls, .csv (Máximo 20MB)
+                        <p class="mt-1 text-[11px] text-slate-300/80">
+                            Conectado al orquestador de ingesta.
+                        </p>
+                    </div>
+                </div>
+
+                <div
+                    class="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl shadow-cyan-500/15 backdrop-blur"
+                >
+                    <div class="border-b border-white/5 bg-white/5 px-6 py-4">
+                        <p class="text-sm font-semibold text-white">Carga y validación</p>
+                        <p class="text-xs text-slate-300/80">
+                            Selecciona el archivo y ejecuta el proceso de validación.
                         </p>
                     </div>
 
-                    <div v-if="selectedFile" class="bg-gray-50 p-4 rounded">
-                        <p class="text-sm text-gray-700">
-                            <span class="font-medium">Archivo seleccionado:</span> {{ selectedFile.name }}
-                        </p>
-                        <p class="text-sm text-gray-500 mt-1">
-                            Tamaño: {{ formatFileSize(selectedFile.size) }}
-                        </p>
-                    </div>
+                    <form @submit.prevent="uploadFile" class="space-y-6 px-6 py-6">
+                        <div class="grid gap-4 rounded-2xl border border-dashed border-white/15 bg-slate-900/40 p-5">
+                            <label for="file" class="text-sm font-semibold text-white">
+                                Seleccionar archivo Excel
+                            </label>
+                            <div class="relative">
+                                <input
+                                    id="file"
+                                    type="file"
+                                    ref="fileInput"
+                                    @change="handleFileChange"
+                                    accept=".xlsx,.xls,.csv"
+                                    class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                    :disabled="uploading"
+                                />
+                                <button
+                                    type="button"
+                                    @click="$refs.fileInput.click()"
+                                    :disabled="uploading"
+                                    class="flex w-full items-center justify-center gap-2 rounded-2xl bg-white/10 px-4 py-3 text-sm font-semibold text-white ring-1 ring-white/15 transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        class="h-4 w-4"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M12 4v12m0 0l3.5-3.5M12 16L8.5 12.5M4 19h16"
+                                        />
+                                    </svg>
+                                    Seleccionar archivo
+                                </button>
+                            </div>
+                            <p class="text-xs text-slate-300/80">
+                                Formatos permitidos: .xlsx, .xls, .csv (máx. 20MB)
+                            </p>
+                        </div>
 
-                    <div v-if="message" :class="[
-                        'p-4 rounded',
-                        messageType === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
-                    ]">
-                        {{ message }}
-                    </div>
+                        <div
+                            v-if="selectedFile"
+                            class="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100"
+                        >
+                            <p class="font-semibold text-white">
+                                Archivo seleccionado: {{ selectedFile.name }}
+                            </p>
+                            <p class="text-xs text-emerald-100/80">
+                                Tamaño: {{ formatFileSize(selectedFile.size) }}
+                            </p>
+                        </div>
 
-                    <button type="submit" :disabled="!selectedFile || uploading" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg
-                               hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed
-                               transition duration-200 flex items-center justify-center">
-                        <span v-if="uploading" class="flex items-center">
-                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                    stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                </path>
-                            </svg>
-                            Procesando...
-                        </span>
-                        <span v-else style="color: white !important;">Subir y procesar archivo</span>
-                    </button>
-                </form>
+                        <div
+                            v-if="message"
+                            :class="[
+                                'rounded-2xl px-4 py-3 text-sm font-semibold',
+                                messageType === 'success'
+                                    ? 'border border-emerald-400/30 bg-emerald-400/10 text-emerald-100'
+                                    : 'border border-rose-400/30 bg-rose-400/10 text-rose-50'
+                            ]"
+                        >
+                            {{ message }}
+                        </div>
+
+                        <button
+                            type="submit"
+                            :disabled="!selectedFile || uploading"
+                            class="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-500 px-5 py-3 text-sm font-semibold text-slate-900 shadow-xl shadow-emerald-400/25 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                            <span
+                                class="absolute inset-0 translate-y-[120%] bg-white/20 transition group-hover:translate-y-0"
+                                aria-hidden="true"
+                            />
+                            <span class="relative flex items-center gap-2">
+                                <svg
+                                    v-if="uploading"
+                                    class="h-5 w-5 animate-spin text-slate-900"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        class="opacity-30"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        stroke-width="4"
+                                    />
+                                    <path
+                                        class="opacity-80"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                    />
+                                </svg>
+                                <span class="relative">
+                                    {{ uploading ? 'Procesando...' : 'Subir y procesar archivo' }}
+                                </span>
+                            </span>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </AppLayout>

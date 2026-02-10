@@ -15,7 +15,7 @@ import { dashboard } from '@/routes';
 import admin from '@/routes/admin';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, FileSpreadsheet } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, FileSpreadsheet, FolderOpen } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from './AppLogo.vue';
 
@@ -32,6 +32,12 @@ const allNavItems: NavItem[] = [
         title: 'Subir excel',
         href: admin.excel.index(),
         icon: FileSpreadsheet,
+        permission: 'Excel read',
+    },
+    {
+        title: 'Archivos subidos',
+        href: admin.excel.files(),
+        icon: FolderOpen,
         permission: 'Excel read',
     },
 ];
@@ -60,8 +66,9 @@ const footerNavItems: NavItem[] = [
 </script>
 
 <template>
-    <Sidebar collapsible="icon" variant="inset">
-        <SidebarHeader>
+    <Sidebar collapsible="icon" variant="inset" class="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+        <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.15),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(129,140,248,0.16),transparent_35%),radial-gradient(circle_at_60%_70%,rgba(16,185,129,0.12),transparent_30%)]" />
+        <SidebarHeader class="relative z-10">
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
@@ -73,11 +80,11 @@ const footerNavItems: NavItem[] = [
             </SidebarMenu>
         </SidebarHeader>
 
-        <SidebarContent>
+        <SidebarContent class="relative z-10">
             <NavMain :items="mainNavItems" />
         </SidebarContent>
 
-        <SidebarFooter>
+        <SidebarFooter class="relative z-10">
             <NavFooter :items="footerNavItems" />
             <NavUser />
         </SidebarFooter>

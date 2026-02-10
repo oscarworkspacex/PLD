@@ -106,4 +106,68 @@ class ExcelController extends Controller
             ->paginate($pageSize, ['*'], 'page', $current);
         return ResponseApp::success($data);
     }
+
+    public function files()
+    {
+        return Inertia::render('admin/excel/Files');
+    }
+
+    public function listFiles()
+    {
+        try {
+            $files = ExcelData::select('excel_name')
+                ->selectRaw('COUNT(*) as records_count')
+                ->selectRaw('MIN(created_at) as created_at')
+                ->groupBy('excel_name')
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return ResponseApp::success($files);
+        } catch (\Exception $e) {
+            Log::error('Error al listar archivos', [
+                'message' => $e->getMessage(),
+            ]);
+            return ResponseApp::error(
+                [],
+                ['Error al obtener la lista de archivos'],
+                500
+            );
+        }
+    }
+
+    public function deleteFile(Request $request)
+    {
+        try {
+            $request->validate([
+                'excel_name' => 'required|string',
+            ]);
+
+            $excelName = $request->input('excel_name');
+            
+            $deletedCount = ExcelData::where('excel_name', $excelName)->delete();
+
+            if ($deletedCount > 0) {
+                return ResponseApp::success(
+                    ['deleted_count' => $deletedCount],
+                    ["Archivo '{$excelName}' eliminado correctamente. Se eliminaron {$deletedCount} registros."]
+                );
+            } else {
+                return ResponseApp::error(
+                    [],
+                    ['No se encontró el archivo especificado'],
+                    404
+                );
+            }
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar archivo', [
+                'message' => $e->getMessage(),
+                'excel_name' => $request->input('excel_name'),
+            ]);
+            return ResponseApp::error(
+                [],
+                ['Error al eliminar el archivo: ' . $e->getMessage()],
+                500
+            );
+        }
+    }
 }
