@@ -60,7 +60,7 @@
                                 />
                                 <button
                                     type="button"
-                                    @click="$refs.fileInput.click()"
+                                    @click="($refs.fileInput as HTMLInputElement)?.click()"
                                     :disabled="uploading"
                                     class="flex w-full items-center justify-center gap-2 rounded-2xl bg-white/10 px-4 py-3 text-sm font-semibold text-white ring-1 ring-white/15 transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
                                 >
@@ -169,33 +169,34 @@ export default {
             breadcrumbs: [
                 {
                     title: 'Home',
-                    href: dashboard()
+                    href: dashboard().url
                 },
                 {
                     title: 'Excel',
-                    href: admin.excel.index()
+                    href: admin.excel.index().url
                 }
             ],
-            selectedFile: null,
+            selectedFile: null as File | null,
             uploading: false,
-            message: null,
-            messageType: null
+            message: null as string | null,
+            messageType: null as string | null
         }
     },
     methods: {
-        handleFileChange(event) {
-            const file = event.target.files[0];
+        handleFileChange(event: Event) {
+            const target = event.target as HTMLInputElement;
+            const file = target.files?.[0];
             if (file) {
                 if (file.size > 20 * 1024 * 1024) {
                     this.showMessage('El archivo es demasiado grande. Máximo 20MB.', 'error');
-                    event.target.value = '';
+                    target.value = '';
                     return;
                 }
                 const validExtensions = ['.xlsx', '.xls', '.csv'];
-                const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+                const fileExtension = '.' + file.name.split('.').pop()!.toLowerCase();
                 if (!validExtensions.includes(fileExtension)) {
                     this.showMessage('Formato de archivo no válido. Use .xlsx, .xls o .csv', 'error');
-                    event.target.value = '';
+                    target.value = '';
                     return;
                 }
                 this.selectedFile = file;
@@ -260,11 +261,12 @@ export default {
                 if (response.data.success) {
                     this.showMessage(`Archivo "${response.data['data'].excel_name}" procesado correctamente.`, 'success');
                     this.selectedFile = null;
-                    this.$refs.fileInput.value = '';
+                    const fileInput = this.$refs.fileInput as HTMLInputElement;
+                    if (fileInput) fileInput.value = '';
                 } else {
                     this.showMessage(response.data.message || 'Error al procesar el archivo', 'error');
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error('=== ERROR DETALLADO ===');
                 console.error('Error completo:', error);
                 console.error('Error response data:', error.response?.data);
@@ -331,11 +333,11 @@ export default {
                 this.uploading = false;
             }
         },
-        showMessage(text, type) {
+        showMessage(text: string, type: string) {
             this.message = text;
             this.messageType = type;
         },
-        formatFileSize(bytes) {
+        formatFileSize(bytes: number) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
