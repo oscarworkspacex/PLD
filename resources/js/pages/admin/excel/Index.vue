@@ -1,5 +1,5 @@
 <template>
-    <Head title="Excel" />
+    <InertiaHead title="Excel" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div
             class="relative min-h-[calc(100vh-8rem)] overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 px-6 py-10 text-slate-50"
@@ -152,8 +152,8 @@
         </div>
     </AppLayout>
 </template>
-<script>
-import { Head } from '@inertiajs/vue3';
+<script lang="ts">
+import { Head as InertiaHead } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
 import admin from '@/routes/admin';
 import { dashboard } from '@/routes';
@@ -161,7 +161,7 @@ import axios from 'axios';
 
 export default {
     components: {
-        Head,
+        InertiaHead,
         AppLayout
     },
     data() {
@@ -235,7 +235,7 @@ export default {
             const formData = new FormData();
             formData.append('file', this.selectedFile);
             console.log('FormData entries:');
-            for (let pair of formData.entries()) {
+            for (const pair of formData.entries()) {
                 console.log(pair[0] + ': ', pair[1]);
             }
 

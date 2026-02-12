@@ -15,7 +15,7 @@ import { dashboard } from '@/routes';
 import admin from '@/routes/admin';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, FileSpreadsheet, FolderOpen } from 'lucide-vue-next';
+import { LayoutGrid, FileSpreadsheet, FolderOpen, UserRoundPlus } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from './AppLogo.vue';
 
@@ -39,6 +39,11 @@ const allNavItems: NavItem[] = [
         href: admin.excel.files(),
         icon: FolderOpen,
         permission: 'Excel read',
+    },
+    {
+        title: 'Captura de cliente',
+        href: dashboard({ query: { section: 'captura-cliente' } }),
+        icon: UserRoundPlus,
     },
 ];
 
