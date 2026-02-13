@@ -45,7 +45,7 @@ const updateField = (field: string, value: string) => {
                 <h4 class="mb-2 text-sm font-semibold text-green-700 dark:text-green-400">Ingresos</h4>
                 <div class="grid gap-4 md:grid-cols-3">
                     <div>
-                        <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                        <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                             Ingresos brutos (mens.)
                         </label>
                         <div class="relative">
@@ -54,12 +54,12 @@ const updateField = (field: string, value: string) => {
                                 type="text"
                                 :value="modelValue.ingresos_brutos"
                                 @input="updateField('ingresos_brutos', ($event.target as HTMLInputElement).value)"
-                                class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 pl-7 text-sm dark:border-slate-700 dark:bg-slate-900"
+                                class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 pl-7 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                             />
                         </div>
                     </div>
                     <div>
-                        <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                        <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                             Ingresos netos (mens.)
                         </label>
                         <div class="relative">
@@ -68,12 +68,12 @@ const updateField = (field: string, value: string) => {
                                 type="text"
                                 :value="modelValue.ingresos_netos"
                                 @input="updateField('ingresos_netos', ($event.target as HTMLInputElement).value)"
-                                class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 pl-7 text-sm dark:border-slate-700 dark:bg-slate-900"
+                                class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 pl-7 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                             />
                         </div>
                     </div>
                     <div>
-                        <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                        <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                             Otros ingresos (mens.)
                         </label>
                         <div class="relative">
@@ -82,7 +82,7 @@ const updateField = (field: string, value: string) => {
                                 type="text"
                                 :value="modelValue.otros_ingresos"
                                 @input="updateField('otros_ingresos', ($event.target as HTMLInputElement).value)"
-                                class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 pl-7 text-sm dark:border-slate-700 dark:bg-slate-900"
+                                class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 pl-7 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                             />
                         </div>
                     </div>
@@ -94,7 +94,7 @@ const updateField = (field: string, value: string) => {
                 <h4 class="mb-2 text-sm font-semibold text-red-700 dark:text-red-400">Egresos</h4>
                 <div class="grid gap-4 md:grid-cols-2">
                     <div>
-                        <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                        <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                             Gastos fijos (mens.)
                         </label>
                         <div class="relative">
@@ -103,12 +103,12 @@ const updateField = (field: string, value: string) => {
                                 type="text"
                                 :value="modelValue.gastos_fijos"
                                 @input="updateField('gastos_fijos', ($event.target as HTMLInputElement).value)"
-                                class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 pl-7 text-sm dark:border-slate-700 dark:bg-slate-900"
+                                class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 pl-7 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                             />
                         </div>
                     </div>
                     <div>
-                        <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                        <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                             Deudas actuales (mens.)
                         </label>
                         <div class="relative">
@@ -117,7 +117,7 @@ const updateField = (field: string, value: string) => {
                                 type="text"
                                 :value="modelValue.deudas_actuales"
                                 @input="updateField('deudas_actuales', ($event.target as HTMLInputElement).value)"
-                                class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 pl-7 text-sm dark:border-slate-700 dark:bg-slate-900"
+                                class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 pl-7 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                             />
                         </div>
                     </div>
@@ -139,13 +139,13 @@ const updateField = (field: string, value: string) => {
                 <div class="flex items-center gap-2">
                     <span class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">1</span>
                     <div class="flex-1">
-                        <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                        <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                             Producto financiero <span class="text-red-500">*</span>
                         </label>
                         <select
                             :value="modelValue.producto_financiero"
                             @input="updateField('producto_financiero', ($event.target as HTMLSelectElement).value)"
-                            class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                            class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                         >
                             <option value="">---------</option>
                             <option value="PRESTAMO_PERSONAL">Préstamo personal</option>
@@ -157,7 +157,7 @@ const updateField = (field: string, value: string) => {
                 <div class="flex items-center gap-2">
                     <span class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">2</span>
                     <div class="flex-1">
-                        <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                        <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                             Forma de pago <span class="text-red-500">*</span>
                         </label>
                         <button
@@ -171,7 +171,7 @@ const updateField = (field: string, value: string) => {
                 <div class="flex items-center gap-2">
                     <span class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">3</span>
                     <div class="flex-1">
-                        <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                        <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                             Tasa anual <span class="text-red-500">*</span>
                         </label>
                         <button
@@ -185,7 +185,7 @@ const updateField = (field: string, value: string) => {
                 <div class="flex items-center gap-2">
                     <span class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">4</span>
                     <div class="flex-1">
-                        <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                        <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                             Comisión % <span class="text-red-500">*</span>
                         </label>
                         <button
@@ -199,7 +199,7 @@ const updateField = (field: string, value: string) => {
                 <div class="flex items-center gap-2">
                     <span class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">5</span>
                     <div class="flex-1">
-                        <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                        <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                             Plazo solicitado <span class="text-red-500">*</span>
                         </label>
                         <button
@@ -213,7 +213,7 @@ const updateField = (field: string, value: string) => {
                 <div class="flex items-center gap-2">
                     <span class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">6</span>
                     <div class="flex-1">
-                        <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                        <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                             Monto solicitado <span class="text-red-500">*</span>
                         </label>
                         <div class="relative">
@@ -222,7 +222,7 @@ const updateField = (field: string, value: string) => {
                                 type="text"
                                 :value="modelValue.monto_solicitado"
                                 @input="updateField('monto_solicitado', ($event.target as HTMLInputElement).value)"
-                                class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 pl-7 text-sm dark:border-slate-700 dark:bg-slate-900"
+                                class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 pl-7 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                             />
                         </div>
                     </div>
@@ -230,28 +230,28 @@ const updateField = (field: string, value: string) => {
                 <div class="flex items-center gap-2">
                     <span class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">7</span>
                     <div class="flex-1">
-                        <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                        <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                             Fecha de disposición <span class="text-red-500">*</span>
                         </label>
                         <input
                             type="date"
                             :value="modelValue.fecha_disposicion"
                             @input="updateField('fecha_disposicion', ($event.target as HTMLInputElement).value)"
-                            class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                            class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                         />
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">8</span>
                     <div class="flex-1">
-                        <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                        <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                             Fecha de inicio o primera cuota <span class="text-red-500">*</span>
                         </label>
                         <input
                             type="date"
                             :value="modelValue.fecha_primera_cuota"
                             @input="updateField('fecha_primera_cuota', ($event.target as HTMLInputElement).value)"
-                            class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                            class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                         />
                     </div>
                 </div>

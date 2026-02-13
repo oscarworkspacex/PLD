@@ -60,57 +60,57 @@ const updateField = (field: string, value: string) => {
             </h3>
             <div class="grid gap-4 md:grid-cols-2">
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Primer nombre <span class="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
                         :value="modelValue.primer_nombre"
                         @input="updateField('primer_nombre', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Segundo nombre
                     </label>
                     <input
                         type="text"
                         :value="modelValue.segundo_nombre"
                         @input="updateField('segundo_nombre', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Apellido paterno <span class="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
                         :value="modelValue.apellido_paterno"
                         @input="updateField('apellido_paterno', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Apellido materno
                     </label>
                     <input
                         type="text"
                         :value="modelValue.apellido_materno"
                         @input="updateField('apellido_materno', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Sexo <span class="text-red-500">*</span>
                     </label>
                     <select
                         :value="modelValue.sexo"
                         @input="updateField('sexo', ($event.target as HTMLSelectElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     >
                         <option value="">---------</option>
                         <option value="M">Masculino</option>
@@ -118,24 +118,24 @@ const updateField = (field: string, value: string) => {
                     </select>
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Fecha de nacimiento <span class="text-red-500">*</span>
                     </label>
                     <input
                         type="date"
                         :value="modelValue.fecha_nacimiento"
                         @input="updateField('fecha_nacimiento', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Estado civil
                     </label>
                     <select
                         :value="modelValue.estado_civil"
                         @input="updateField('estado_civil', ($event.target as HTMLSelectElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     >
                         <option value="">---------</option>
                         <option value="SOLTERO">Soltero(a)</option>
@@ -146,13 +146,13 @@ const updateField = (field: string, value: string) => {
                     </select>
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Identificación <span class="text-red-500">*</span>
                     </label>
                     <select
                         :value="modelValue.identificacion"
                         @input="updateField('identificacion', ($event.target as HTMLSelectElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     >
                         <option value="">---------</option>
                         <option value="INE">INE</option>
@@ -161,24 +161,24 @@ const updateField = (field: string, value: string) => {
                     </select>
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Clave de identificación
                     </label>
                     <input
                         type="text"
                         :value="modelValue.clave_identificacion"
                         @input="updateField('clave_identificacion', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Entidad de nacimiento <span class="text-red-500">*</span>
                     </label>
                     <select
                         :value="modelValue.entidad_nacimiento"
                         @input="updateField('entidad_nacimiento', ($event.target as HTMLSelectElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     >
                         <option value="">---------</option>
                         <option value="AGUASCALIENTES">Aguascalientes</option>
@@ -188,7 +188,7 @@ const updateField = (field: string, value: string) => {
                     </select>
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         RFC con homoclave <span class="text-red-500">*</span>
                     </label>
                     <div class="flex gap-2 items-center">
@@ -196,7 +196,7 @@ const updateField = (field: string, value: string) => {
                             type="text"
                             :value="modelValue.rfc_homoclave"
                             @input="updateField('rfc_homoclave', ($event.target as HTMLInputElement).value)"
-                            class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                            class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                         />
                         <button
                             type="button"
@@ -207,7 +207,7 @@ const updateField = (field: string, value: string) => {
                     </div>
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         CURP <span class="text-red-500">*</span>
                     </label>
                     <div class="flex gap-2 items-center">
@@ -215,7 +215,7 @@ const updateField = (field: string, value: string) => {
                             type="text"
                             :value="modelValue.curp"
                             @input="updateField('curp', ($event.target as HTMLInputElement).value)"
-                            class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                            class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                         />
                         <button
                             type="button"
@@ -226,13 +226,13 @@ const updateField = (field: string, value: string) => {
                     </div>
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Escolaridad
                     </label>
                     <select
                         :value="modelValue.escolaridad"
                         @input="updateField('escolaridad', ($event.target as HTMLSelectElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     >
                         <option value="">---------</option>
                         <option value="PRIMARIA">Primaria</option>
@@ -252,7 +252,7 @@ const updateField = (field: string, value: string) => {
             </h3>
             <div class="grid gap-4 md:grid-cols-2">
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Código postal <span class="text-red-500">*</span>
                     </label>
                     <input
@@ -260,11 +260,11 @@ const updateField = (field: string, value: string) => {
                         :value="modelValue.codigo_postal"
                         @input="updateField('codigo_postal', ($event.target as HTMLInputElement).value)"
                         placeholder="Introducir código postal"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Estado <span class="text-red-500">*</span>
                     </label>
                     <input
@@ -272,11 +272,11 @@ const updateField = (field: string, value: string) => {
                         :value="modelValue.estado"
                         @input="updateField('estado', ($event.target as HTMLInputElement).value)"
                         placeholder="Introducir código postal"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Municipio/Delegación/Alcaldía <span class="text-red-500">*</span>
                     </label>
                     <input
@@ -284,22 +284,22 @@ const updateField = (field: string, value: string) => {
                         :value="modelValue.municipio"
                         @input="updateField('municipio', ($event.target as HTMLInputElement).value)"
                         placeholder="Introducir código postal"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Ciudad
                     </label>
                     <input
                         type="text"
                         :value="modelValue.ciudad"
                         @input="updateField('ciudad', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Colonia <span class="text-red-500">*</span>
                     </label>
                     <input
@@ -307,61 +307,61 @@ const updateField = (field: string, value: string) => {
                         :value="modelValue.colonia"
                         @input="updateField('colonia', ($event.target as HTMLInputElement).value)"
                         placeholder="Introducir código postal"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Calle <span class="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
                         :value="modelValue.calle"
                         @input="updateField('calle', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Número exterior <span class="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
                         :value="modelValue.numero_exterior"
                         @input="updateField('numero_exterior', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Entre la calle de <span class="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
                         :value="modelValue.entre_calle"
                         @input="updateField('entre_calle', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Y la calle de <span class="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
                         :value="modelValue.y_calle"
                         @input="updateField('y_calle', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         País domicilio <span class="text-red-500">*</span>
                     </label>
                     <select
                         :value="modelValue.pais_domicilio"
                         @input="updateField('pais_domicilio', ($event.target as HTMLSelectElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     >
                         <option value="">---------</option>
                         <option value="MEXICO">México</option>
@@ -377,35 +377,35 @@ const updateField = (field: string, value: string) => {
             </h3>
             <div class="grid gap-4 md:grid-cols-2">
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Fecha de toma de posesión
                     </label>
                     <input
                         type="date"
                         :value="modelValue.fecha_posesion"
                         @input="updateField('fecha_posesion', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Tiempo de vivir en el domicilio <span class="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
                         :value="modelValue.tiempo_vivir"
                         @input="updateField('tiempo_vivir', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Tipo de propiedad <span class="text-red-500">*</span>
                     </label>
                     <select
                         :value="modelValue.tipo_propiedad"
                         @input="updateField('tipo_propiedad', ($event.target as HTMLSelectElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     >
                         <option value="">---------</option>
                         <option value="PROPIA">Propia</option>
@@ -414,13 +414,13 @@ const updateField = (field: string, value: string) => {
                     </select>
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Tipo de domicilio
                     </label>
                     <select
                         :value="modelValue.tipo_domicilio"
                         @input="updateField('tipo_domicilio', ($event.target as HTMLSelectElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     >
                         <option value="">---------</option>
                         <option value="CASA">Casa</option>
@@ -428,13 +428,13 @@ const updateField = (field: string, value: string) => {
                     </select>
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Tipo de asentamiento
                     </label>
                     <select
                         :value="modelValue.tipo_asentamiento"
                         @input="updateField('tipo_asentamiento', ($event.target as HTMLSelectElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     >
                         <option value="">---------</option>
                         <option value="URBANO">Urbano</option>
@@ -451,47 +451,47 @@ const updateField = (field: string, value: string) => {
             </h3>
             <div class="grid gap-4 md:grid-cols-2">
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Nombre del cónyuge
                     </label>
                     <input
                         type="text"
                         :value="modelValue.nombre_conyuge"
                         @input="updateField('nombre_conyuge', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Teléfono laboral del cónyuge
                     </label>
                     <input
                         type="tel"
                         :value="modelValue.telefono_laboral_conyuge"
                         @input="updateField('telefono_laboral_conyuge', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Teléfono celular del cónyuge
                     </label>
                     <input
                         type="tel"
                         :value="modelValue.telefono_celular_conyuge"
                         @input="updateField('telefono_celular_conyuge', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
                 <div>
-                    <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">
+                    <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Domicilio laboral del cónyuge
                     </label>
                     <input
                         type="text"
                         :value="modelValue.domicilio_laboral_conyuge"
                         @input="updateField('domicilio_laboral_conyuge', ($event.target as HTMLInputElement).value)"
-                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                        class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                 </div>
             </div>
