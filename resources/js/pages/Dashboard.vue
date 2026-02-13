@@ -8,6 +8,15 @@ import axios from 'axios';
 import admin from '@/routes/admin';
 import { numeralFormat } from 'vue-numerals';
 
+// Importar componentes modulares
+import MedioContacto from '@/components/ClientCapture/MedioContacto.vue';
+import DatosIdentificacion from '@/components/ClientCapture/DatosIdentificacion.vue';
+import DatosLaborales from '@/components/ClientCapture/DatosLaborales.vue';
+import SolicitudOperacion from '@/components/ClientCapture/SolicitudOperacion.vue';
+import DatosContacto from '@/components/ClientCapture/DatosContacto.vue';
+import Garantias from '@/components/ClientCapture/Garantias.vue';
+import PLD from '@/components/ClientCapture/PLD.vue';
+
 // Reactive state for the search
 const searchQuery = ref('');
 const data = ref([]);
@@ -22,6 +31,20 @@ const captureOptions = [
     { label: 'Solicitud P. Moral', value: 'solicitud-p-moral' },
 ];
 
+// Pestaña activa
+const activeTab = ref('medio-contacto');
+
+// Datos del formulario
+const formData = ref({
+    medioContacto: {},
+    datosIdentificacion: {},
+    datosLaborales: {},
+    solicitudOperacion: {},
+    datosContacto: {},
+    garantias: {},
+    pld: {},
+});
+
 const isCapturaClienteView = computed(() => {
     const [, queryString = ''] = page.url.split('?');
     const params = new URLSearchParams(queryString);
@@ -29,6 +52,25 @@ const isCapturaClienteView = computed(() => {
 });
 
 const isSolicitudFisicaSelected = computed(() => selectedCaptureOption.value === 'solicitud-p-fisica');
+
+const tabs = [
+    { id: 'medio-contacto', label: 'Medio de contacto', component: 'MedioContacto' },
+    { id: 'datos-identificacion', label: 'Datos de identificación', component: 'DatosIdentificacion' },
+    { id: 'datos-laborales', label: 'Datos laborales', component: 'DatosLaborales' },
+    { id: 'solicitud-operacion', label: 'Solicitud de operación', component: 'SolicitudOperacion' },
+    { id: 'datos-contacto', label: 'Datos de contacto', component: 'DatosContacto' },
+    { id: 'garantias', label: 'Garantías', component: 'Garantias' },
+    { id: 'pld', label: 'P.L.D.', component: 'PLD' },
+];
+
+const setActiveTab = (tabId: string) => {
+    activeTab.value = tabId;
+};
+
+const saveForm = () => {
+    console.log('Guardando formulario:', formData.value);
+    // Aquí implementarás el guardado cuando tengas el backend listo
+};
 
 // Search function
 const handleSearch = () => {
@@ -96,86 +138,60 @@ const breadcrumbs: BreadcrumbItem[] = [
                         </select>
                     </div>
 
-                    <div class="grid gap-4 md:grid-cols-[260px_1fr]">
-                        <aside class="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/40">
-                            <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                                Opciones
-                            </p>
-                            <div class="space-y-2">
-                                <button
-                                    v-for="option in captureOptions"
-                                    :key="option.value"
-                                    type="button"
-                                    @click="selectedCaptureOption = option.value"
-                                    class="w-full rounded-md px-3 py-2 text-left text-sm transition-colors"
-                                    :class="selectedCaptureOption === option.value
+                    <div v-if="isSolicitudFisicaSelected">
+                        <!-- Pestañas -->
+                        <div class="mb-4 flex flex-wrap gap-2 border-b border-slate-200 pb-3 dark:border-slate-800">
+                            <button
+                                v-for="tab in tabs"
+                                :key="tab.id"
+                                type="button"
+                                @click="setActiveTab(tab.id)"
+                                :class="[
+                                    'rounded-md px-3 py-1 text-xs font-medium transition-colors',
+                                    activeTab === tab.id
                                         ? 'bg-blue-600 text-white'
-                                        : 'bg-white text-slate-700 hover:bg-slate-100 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-800'"
+                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                                ]"
+                            >
+                                {{ tab.label }}
+                            </button>
+                        </div>
+
+                        <!-- Contenido de las pestañas -->
+                        <div class="rounded-lg border border-slate-200 p-4 dark:border-slate-800">
+                            <component
+                                :is="activeTab === 'medio-contacto' ? MedioContacto : 
+                                     activeTab === 'datos-identificacion' ? DatosIdentificacion :
+                                     activeTab === 'datos-laborales' ? DatosLaborales :
+                                     activeTab === 'solicitud-operacion' ? SolicitudOperacion :
+                                     activeTab === 'datos-contacto' ? DatosContacto :
+                                     activeTab === 'garantias' ? Garantias :
+                                     PLD"
+                                v-model="formData[
+                                    activeTab === 'medio-contacto' ? 'medioContacto' :
+                                    activeTab === 'datos-identificacion' ? 'datosIdentificacion' :
+                                    activeTab === 'datos-laborales' ? 'datosLaborales' :
+                                    activeTab === 'solicitud-operacion' ? 'solicitudOperacion' :
+                                    activeTab === 'datos-contacto' ? 'datosContacto' :
+                                    activeTab === 'garantias' ? 'garantias' :
+                                    'pld'
+                                ]"
+                            />
+
+                            <div class="mt-6 flex justify-end gap-3">
+                                <button
+                                    type="button"
+                                    @click="saveForm"
+                                    class="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
                                 >
-                                    {{ option.label }}
+                                    Guardar información
                                 </button>
                             </div>
-                        </aside>
+                        </div>
+                    </div>
 
-                        <section class="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
-                            <div v-if="isSolicitudFisicaSelected">
-                                <div class="mb-4 flex flex-wrap gap-2 border-b border-slate-200 pb-3 dark:border-slate-800">
-                                    <span class="rounded-md bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">Medio de contacto</span>
-                                    <span class="rounded-md bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">Datos de identificación</span>
-                                    <span class="rounded-md bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">Datos laborales</span>
-                                    <span class="rounded-md bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">Solicitud de operación</span>
-                                    <span class="rounded-md bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">Datos de contacto</span>
-                                    <span class="rounded-md bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">Garantías</span>
-                                    <span class="rounded-md bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">P.L.D.</span>
-                                </div>
-
-                                <div class="rounded-lg border border-slate-200 p-4 dark:border-slate-800">
-                                    <div class="mb-4 rounded-md bg-slate-100 px-3 py-2 text-sm text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                                        Para uso exclusivo de la SOFOM
-                                    </div>
-
-                                    <div class="grid gap-4 lg:grid-cols-[1fr_250px]">
-                                        <div class="space-y-3">
-                                            <div>
-                                                <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">Medio de contacto <span class="text-red-500">*</span></label>
-                                                <select class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900">
-                                                    <option>PROMOTOR</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">Promotor <span class="text-red-500">*</span></label>
-                                                <input type="text" class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                                            </div>
-                                            <div>
-                                                <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">Puesto del contacto</label>
-                                                <input type="text" class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                                            </div>
-                                            <div>
-                                                <label class="mb-1 block text-sm text-slate-700 dark:text-slate-300">Teléfono del contacto</label>
-                                                <input type="text" class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                                            </div>
-                                        </div>
-
-                                        <div class="h-fit rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-300">
-                                            Aviso campos requeridos
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-6 text-center">
-                                        <button
-                                            type="button"
-                                            class="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
-                                        >
-                                            Guardar información
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div v-else class="rounded-md border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">
-                                Vista disponible próximamente para esta opción.
-                            </div>
-                        </section>
+                    <div v-else class="rounded-md border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                        Vista disponible próximamente para esta opción.
                     </div>
                 </div>
             </template>
