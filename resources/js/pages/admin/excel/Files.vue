@@ -137,6 +137,13 @@
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <button
+                                        @click="openPreview(file.excel_name)"
+                                        class="rounded-xl bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-200 ring-1 ring-cyan-400/30 transition hover:bg-cyan-500/20"
+                                        title="Ver contenido del archivo"
+                                    >
+                                        Ver contenido
+                                    </button>
+                                    <button
                                         @click="confirmDelete(file.excel_name)"
                                         :disabled="deleting === file.excel_name"
                                         class="rounded-xl bg-rose-500/10 px-4 py-2 text-sm font-semibold text-rose-300 ring-1 ring-rose-500/20 transition hover:bg-rose-500/20 disabled:cursor-not-allowed disabled:opacity-60"
@@ -266,6 +273,9 @@ export default {
         confirmDelete(excelName) {
             this.fileToDelete = excelName;
             this.showDeleteModal = true;
+        },
+        openPreview(excelName) {
+            window.location.href = `/admin/excel/file-preview?excel_name=${encodeURIComponent(excelName)}`;
         },
         async deleteFile() {
             if (!this.fileToDelete) return;

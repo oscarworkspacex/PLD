@@ -29,25 +29,35 @@ class ExcelDataImport implements ToArray, WithChunkReading, WithBatchInserts
     {
         $dataToInsert = [];
         set_time_limit(0);
-        foreach ($rows as $row) {
-            // Procesa cada celda de la fila
-            foreach ($row as $cellValue) {
-                // Solo inserta si el valor no está vacío
-                if ($cellValue !== null && $cellValue !== '') {
-                    $normalizedValue = is_numeric($cellValue) ? (string)$cellValue : $cellValue;
+        
+        foreach ($rows as $rowIndex => $row) {
+            // Filtrar valores vacíos de la fila
+            $rowData = array_filter($row, function($value) {
+                return $value !== null && $value !== '';
+            });
+            
+            // Si la fila tiene datos, procesarla
+            if (!empty($rowData)) {
+                // Normalizar todos los valores de la fila
+                $normalizedRow = array_map(function($value) {
+                    return is_numeric($value) ? (string)$value : $value;
+                }, $rowData);
+                
+                // Crear un string concatenado de toda la fila para búsqueda
+                $searchableValue = implode(' | ', $normalizedRow);
+                
+                // Verificar si esta fila ya existe
+                if (!in_array($searchableValue, $this->existingValues, true)) {
+                    $dataToInsert[] = [
+                        'value' => $searchableValue, // Valor concatenado para búsqueda
+                        'row_data' => json_encode(array_values($normalizedRow)), // Fila completa como JSON
+                        'excel_name' => $this->excelName,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
                     
-                    // Verificar si el valor ya existe (búsqueda en memoria, más rápido)
-                    if (!in_array($normalizedValue, $this->existingValues, true)) {
-                        $dataToInsert[] = [
-                            'value' => $normalizedValue,
-                            'excel_name' => $this->excelName,
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ];
-                        
-                        // Agregar a la lista de existentes para evitar duplicados en el mismo batch
-                        $this->existingValues[] = $normalizedValue;
-                    }
+                    // Agregar a la lista de existentes para evitar duplicados
+                    $this->existingValues[] = $searchableValue;
                 }
             }
         }

@@ -15,7 +15,7 @@ import { dashboard } from '@/routes';
 import admin from '@/routes/admin';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { LayoutGrid, FileSpreadsheet, FolderOpen, UserRoundPlus } from 'lucide-vue-next';
+import { LayoutGrid, FileSpreadsheet, FolderOpen, UserRoundPlus, Users, BellRing, ShieldAlert, HandCoins, Gauge } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from './AppLogo.vue';
 
@@ -44,6 +44,42 @@ const allNavItems: NavItem[] = [
         title: 'Captura de cliente',
         href: dashboard({ query: { section: 'captura-cliente' } }),
         icon: UserRoundPlus,
+    },
+    {
+        title: 'Seleccionar clientes',
+        href: dashboard({ query: { section: 'seleccionar-clientes' } }),
+        icon: Users,
+    },
+    {
+        title: 'Prestamo',
+        href: dashboard({ query: { section: 'prestamos' } }),
+        icon: HandCoins,
+    },
+    {
+        title: 'Umbral',
+        href: dashboard({ query: { section: 'umbral' } }),
+        icon: Gauge,
+    },
+    {
+        title: 'Usuarios del sistema',
+        href: dashboard({ query: { section: 'usuarios-sistema' } }),
+        icon: Users,
+        permission: 'User read',
+    },
+    {
+        title: 'Alertas',
+        href: dashboard({ query: { section: 'alertas' } }),
+        icon: BellRing,
+    },
+    {
+        title: 'Clasificacion de riesgo',
+        href: dashboard({ query: { section: 'clasificacion-riesgo' } }),
+        icon: ShieldAlert,
+    },
+    {
+        title: 'Alertas anonimas',
+        href: dashboard({ query: { section: 'alertas-anonimas' } }),
+        icon: BellRing,
     },
 ];
 
@@ -76,7 +112,11 @@ const footerNavItems: NavItem[] = [
         <SidebarHeader class="relative z-10">
             <SidebarMenu>
                 <SidebarMenuItem>
-                    <SidebarMenuButton size="lg" as-child>
+                    <SidebarMenuButton
+                        size="lg"
+                        as-child
+                        class="h-auto min-h-[5.5rem] items-start overflow-visible py-3"
+                    >
                         <Link :href="dashboard()">
                             <AppLogo />
                         </Link>

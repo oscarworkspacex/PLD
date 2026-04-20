@@ -38,19 +38,28 @@ const updateField = (field: string, value: string) => {
                         class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     >
                         <option value="">---------</option>
+                        <option value="AMIGOS">AMIGOS</option>
+                        <option value="EMPRESA">EMPRESA</option>
+                        <option value="FOLLETO">FOLLETO</option>
+                        <option value="INTERNET">INTERNET</option>
+                        <option value="PERIÓDICO">PERIÓDICO</option>
                         <option value="PROMOTOR">PROMOTOR</option>
+                        <option value="RADIO">RADIO</option>
                     </select>
                 </div>
                 <div>
                     <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">
                         Promotor <span class="text-red-500">*</span>
                     </label>
-                    <input
-                        type="text"
+                    <select
                         :value="modelValue.promotor"
-                        @input="updateField('promotor', ($event.target as HTMLInputElement).value)"
+                        @input="updateField('promotor', ($event.target as HTMLSelectElement).value)"
                         class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
-                    />
+                    >
+                        <option value="">---------</option>
+                        <option value="PROMOTOR CRÉDITO SIMPLE">PROMOTOR CRÉDITO SIMPLE</option>
+                        <option value="PROMOTOR CRÉDITO SIMPLE">PROMOTOR CRÉDITO SIMPLE</option>
+                    </select>
                 </div>
                 <div>
                     <label class="mb-1 block text-sm font-medium text-slate-900 dark:text-slate-300">

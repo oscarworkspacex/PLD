@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { dashboard, login, register } from '@/routes';
 import { Head, Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
+
+const showTermsModal = ref(false);
 
 withDefaults(
     defineProps<{
@@ -40,13 +43,29 @@ withDefaults(
                     >
                         RC
                     </div>
-                    <div>
-                        <p class="text-sm uppercase tracking-[0.2em] text-slate-300">
-                            Intellilaw AI
-                        </p>
-                        <p class="text-base font-semibold text-white">
-                            Plataforma para la auditoria de SOFOMES
-                        </p>
+                    <div class="flex items-center gap-4">
+                        <div>
+                            <p class="text-sm uppercase tracking-[0.2em] text-slate-300">
+                                Intellilaw AI
+                            </p>
+                            <p class="text-base font-semibold text-white">
+                                Plataforma para la auditoria de SOFOMES
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-2 border-l border-white/10 pl-4">
+                            <div class="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/5 overflow-hidden">
+                                <img 
+                                    src="/images/ImgLiquidez.jpg" 
+                                    alt="Liquidez Logo" 
+                                    class="h-full w-full object-cover"
+                                />
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-white/90">
+                                    S.A.P.I. de C.V. SOFOM E.N.R
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <nav class="flex items-center gap-2 text-sm">
@@ -406,12 +425,13 @@ withDefaults(
                     </p>
                 </div>
                 <div class="flex flex-wrap gap-3">
-                    <Link
-                        :href="$page.props.auth.user ? dashboard() : login()"
+                    <button
+                        type="button"
+                        @click="showTermsModal = true"
                         class="rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-white/20 transition hover:translate-y-[-1px]"
                     >
                         Revisar términos y condiciones
-                    </Link>
+                    </button>
                     <Link
                         v-if="canRegister"
                         :href="register()"
@@ -421,6 +441,155 @@ withDefaults(
                     </Link>
                 </div>
             </section>
+        </div>
+    </div>
+
+    <div
+        v-if="showTermsModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+        @click.self="showTermsModal = false"
+    >
+        <div
+            class="max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-2xl border border-white/10 bg-[#0B1020] p-6 text-slate-200 shadow-2xl"
+        >
+            <div class="mb-4 flex items-start justify-between gap-4">
+                <h3 class="text-xl font-semibold text-white">
+                    Términos y Condiciones y Política de Privacidad
+                </h3>
+                <button
+                    type="button"
+                    class="rounded-md border border-white/20 px-3 py-1 text-sm text-white hover:bg-white/10"
+                    @click="showTermsModal = false"
+                >
+                    Cerrar
+                </button>
+            </div>
+
+            <div class="space-y-5 text-sm leading-6 text-slate-300">
+                <div class="space-y-1">
+                    <p class="text-base font-semibold text-white">INTELLILAW MEXICO, S.A. DE C.V.</p>
+                    <p>(INTELLILAW MEXICO, SOCIEDAD ANÓNIMA DE CAPITAL VARIABLE)</p>
+                </div>
+
+                <p>
+                    En INTELLILAW MEXICO, S.A. de C.V., empresa conocida comercialmente como IntelliLaw Mexico,
+                    con domicilio en __________________________________________________________, nos comprometemos
+                    a proteger la privacidad de tus datos personales y a tratarlos con la máxima confidencialidad.
+                    Esta Política de Privacidad establece los términos en los que recopilamos, usamos, almacenamos,
+                    divulgamos y protegemos tus datos personales conforme a la Ley Federal de Protección de Datos
+                    Personales en Posesión de los Particulares (LFPDPPP) y su Reglamento, así como cualquier otra
+                    legislación aplicable en materia de protección de datos.
+                </p>
+
+                <div>
+                    <h4 class="mb-2 text-base font-semibold text-white">Datos Personales</h4>
+                    <p class="mb-2">La Empresa recopila los siguientes datos personales para cumplir con los fines establecidos en esta política:</p>
+                    <ul class="list-disc space-y-1 pl-5">
+                        <li>Datos de identificación personal: Nombre completo, dirección, teléfono, correo electrónico, entre otros.</li>
+                        <li>Datos financieros: Información sobre cuentas bancarias, transacciones, historial de pagos, ingresos y balances de cuentas.</li>
+                        <li>Datos de contacto: Información relacionada con comunicaciones electrónicas, como el correo electrónico.</li>
+                        <li>Datos de uso: Información sobre el uso del sistema (direcciones IP, tipo de dispositivo, ubicación, registros de acceso, etc.).</li>
+                        <li>Datos sensibles (cuando aplicable): Datos financieros relacionados con la administración de la cartera, historial crediticio, entre otros.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="mb-2 text-base font-semibold text-white">Finalidad del Tratamiento de los Datos Personales</h4>
+                    <p class="mb-2">Los datos personales que recopilamos se utilizan para los siguientes fines:</p>
+                    <ul class="list-disc space-y-1 pl-5">
+                        <li>Cumplimiento de obligaciones contractuales: Para la administración y operación del sistema financiero, gestión de cartera, PLD y para brindarte el servicio que has solicitado.</li>
+                        <li>Mejorar la calidad de nuestros servicios: Para ofrecer soporte al cliente, responder a dudas, realizar actualizaciones del sistema y mejorar la experiencia de usuario.</li>
+                        <li>Cumplimiento de obligaciones legales: Para cumplir con las disposiciones fiscales y legales aplicables, así como con los requerimientos de autoridades competentes.</li>
+                        <li>Seguridad: Para prevenir fraudes, proteger nuestra infraestructura tecnológica y mantener la integridad de los datos almacenados.</li>
+                        <li>Publicidad y promoción: Si así lo autorizas, para enviarte ofertas y promociones relacionadas con nuestros servicios.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="mb-2 text-base font-semibold text-white">Bases Legales para el Tratamiento de Datos</h4>
+                    <p class="mb-2">El tratamiento de tus datos personales se basa en las siguientes bases legales, conforme a la LFPDPPP:</p>
+                    <ul class="list-disc space-y-1 pl-5">
+                        <li>Consentimiento: Al proporcionarnos tus datos personales, aceptas y consientes el tratamiento de los mismos según los fines establecidos.</li>
+                        <li>Cumplimiento de una obligación contractual: En los casos en los que el tratamiento de datos es necesario para la ejecución de un contrato celebrado contigo.</li>
+                        <li>Cumplimiento de obligaciones legales: Cuando estemos obligados a procesar tus datos conforme a la ley.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="mb-2 text-base font-semibold text-white">Derechos de los Titulares de los Datos Personales</h4>
+                    <p class="mb-2">En todo momento, tendrás los siguientes derechos en relación con tus datos personales, que podrás ejercer ante la Empresa:</p>
+                    <ul class="list-disc space-y-1 pl-5">
+                        <li>Acceso: Derecho a conocer qué datos personales tenemos sobre ti, así como las condiciones y tratamientos que se les da.</li>
+                        <li>Rectificación: Derecho a corregir datos personales cuando sean incorrectos o incompletos.</li>
+                        <li>Cancelación: Derecho a solicitar la eliminación de tus datos cuando consideres que ya no son necesarios o que están siendo utilizados de manera inapropiada.</li>
+                        <li>Oposición: Derecho a oponerte al tratamiento de tus datos personales en situaciones específicas.</li>
+                        <li>Portabilidad (en su caso, cuando resulte aplicable): Derecho a recibir tus datos en un formato estructurado, comúnmente utilizado y de fácil lectura, para ser transferidos a otro responsable.</li>
+                    </ul>
+                    <p class="mt-2">
+                        Para ejercer cualquiera de estos derechos, deberás presentar una solicitud ante la Empresa a través de los medios establecidos en la sección de contacto de esta política.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="mb-2 text-base font-semibold text-white">Revocación del Consentimiento</h4>
+                    <p>
+                        En cualquier momento, podrás revocar el consentimiento otorgado para el tratamiento de tus datos personales.
+                        Para hacerlo, deberás enviar una solicitud a través de los canales de contacto proporcionados en esta política.
+                        Sin embargo, ten en cuenta que la revocación de tu consentimiento no afectará la legalidad del tratamiento realizado con anterioridad.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="mb-2 text-base font-semibold text-white">Transferencia de Datos Personales</h4>
+                    <p class="mb-2">La Empresa podrá transferir tus datos personales a terceros, dentro y fuera del territorio nacional, en los siguientes casos:</p>
+                    <ul class="list-disc space-y-1 pl-5">
+                        <li>Proveedores de servicios: Con empresas que nos ayuden a operar el sistema, prestar servicios de soporte o realizar análisis de datos. Estas empresas estarán obligadas a cumplir con las mismas medidas de protección de datos que nosotros.</li>
+                        <li>Cumplimiento de obligaciones legales: Cuando la transferencia sea necesaria para cumplir con obligaciones legales o cuando lo soliciten autoridades competentes.</li>
+                        <li>En casos de transacciones corporativas: En caso de fusión, adquisición o venta de la Empresa, los datos serán transferidos a la nueva entidad.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="mb-2 text-base font-semibold text-white">Medidas de Seguridad</h4>
+                    <p>
+                        Implementamos medidas de seguridad administrativas, técnicas y físicas para proteger tus datos personales contra pérdida, uso indebido, acceso no autorizado o divulgación.
+                        Estas medidas se revisan y actualizan periódicamente para garantizar la máxima protección posible.
+                    </p>
+                    <p class="mt-2">
+                        Asimismo, podrás revocar o retirar el consentimiento proporcionado previamente para el tratamiento de tus datos personales u oponerte a dicho tratamiento.
+                        Es importante tener en cuenta que estos derechos pueden no ser absolutos.
+                        Por ejemplo, si retiras tu consentimiento para procesar tus datos personales, podremos continuar procesando tus datos personales en la medida requerida o permitida por la ley,
+                        en particular en relación con el ejercicio y la defensa de nuestros derechos o nuestras obligaciones legales y/o regulatorias.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="mb-2 text-base font-semibold text-white">Uso de Cookies</h4>
+                    <p>
+                        Utilizamos cookies y tecnologías similares para mejorar la experiencia del usuario en nuestro sistema, analizar el uso de los servicios y personalizar las interacciones.
+                        Puedes configurar tu navegador para rechazar el uso de cookies, pero esto podría afectar el funcionamiento de algunas partes del sistema.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="mb-2 text-base font-semibold text-white">Modificaciones a esta Política de Privacidad</h4>
+                    <p>
+                        INTELLILAW MEXICO, S.A. de C.V. podrá modificar esta política de privacidad en cualquier momento.
+                        Las modificaciones serán publicadas en este sitio web y entrarán en vigor desde su publicación.
+                        Te recomendamos revisar periódicamente esta política para estar al tanto de cualquier cambio.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="mb-2 text-base font-semibold text-white">Contacto</h4>
+                    <p>Si tienes dudas, comentarios o solicitudes respecto a esta política de privacidad, o deseas ejercer tus derechos, puedes ponerte en contacto con nosotros a través de los siguientes medios:</p>
+                    <ul class="mt-2 list-disc space-y-1 pl-5">
+                        <li>Correo electrónico: ________________________________</li>
+                        <li>Teléfono: _________________________________________</li>
+                        <li>Dirección física: ______________________________________________________________</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </template>

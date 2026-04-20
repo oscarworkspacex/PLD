@@ -1,0 +1,172 @@
+---
+description: Laravel best practices - MVC architecture, reusable code, Artisan commands, and clean separation of concerns
+alwaysApply: true
+---
+
+# Laravel Development Standards
+
+## Artisan Commands First
+
+Always use Artisan commands to scaffold code structure:
+
+```bash
+php artisan make:model Post -mcr        # Model + migration + controller + resource
+php artisan make:request StorePostRequest
+php artisan make:test PostTest
+php artisan make:policy PostPolicy --model=Post
+```
+
+Use official Laravel commands for environment management: `php artisan serve`, `php artisan migrate`, `php artisan queue:work`, `php artisan cache:clear`.
+
+## MVC Architecture
+
+**Controllers**: Thin controllers that delegate to services/actions.
+
+```php
+// ❌ BAD - Fat controller with business logic
+public function store(Request $request) {
+    $data = $request->all();
+    $user = User::create($data);
+    Mail::to($user)->send(new WelcomeEmail());
+    event(new UserRegistered($user));
+    return response()->json($user);
+}
+
+// ✅ GOOD - Delegated to action/service
+public function store(StoreUserRequest $request, CreateUserAction $action) {
+    $user = $action->execute($request->validated());
+    return new UserResource($user);
+}
+```
+
+**Validation**: Use Form Requests, not inline validation.
+
+```php
+// ❌ BAD
+$request->validate(['email' => 'required|email']);
+
+// ✅ GOOD
+public function store(StoreUserRequest $request) { ... }
+```
+
+**Authorization**: Use Policies and Gates explicitly.
+
+```php
+// ❌ BAD - Authorization in controller logic
+if ($user->role === 'admin') { ... }
+
+// ✅ GOOD
+$this->authorize('update', $post);
+```
+
+## Single Responsibility Principle
+
+Each class, method, and component should have one clear purpose.
+
+```php
+// ❌ BAD - Multiple responsibilities
+class UserController {
+    public function store(Request $request) {
+        // Validates, creates user, sends email, logs activity
+    }
+}
+
+// ✅ GOOD - Separated concerns
+class CreateUserAction {
+    public function execute(array $data): User { ... }
+}
+class SendWelcomeEmailAction {
+    public function execute(User $user): void { ... }
+}
+```
+
+## Code Reusability
+
+Extract common logic into services, traits, helpers, or action classes. Avoid duplication.
+
+```php
+// ❌ BAD - Duplicated query logic
+User::where('status', 'active')->where('verified', true)->get();
+
+// ✅ GOOD - Reusable scope
+class User extends Model {
+    public function scopeActive($query) {
+        return $query->where('status', 'active')->where('verified', true);
+    }
+}
+User::active()->get();
+```
+
+## Layer Separation
+
+- **HTTP Layer**: Controllers, Requests, Resources, Middleware
+- **Business Logic**: Services, Actions, Domain classes
+- **Data Access**: Models, Query Scopes, Repositories (if applicable)
+
+## Eloquent Best Practices
+
+**Avoid N+1 queries** with eager loading:
+
+```php
+// ❌ BAD - N+1 problem
+$posts = Post::all();
+foreach ($posts as $post) {
+    echo $post->user->name;  // Query per iteration
+}
+
+// ✅ GOOD - Eager loading
+$posts = Post::with('user')->get();
+```
+
+**Use query scopes** for reusable filters:
+
+```php
+Post::published()->recent()->get();
+```
+
+**Define relationships and casts properly**:
+
+```php
+protected $casts = [
+    'published_at' => 'datetime',
+    'metadata' => 'array',
+    'is_featured' => 'boolean',
+];
+```
+
+## Error Handling
+
+Use domain-specific exceptions and return consistent HTTP responses.
+
+```php
+// ❌ BAD
+catch (Exception $e) { return response()->json(['error' => 'Error']); }
+
+// ✅ GOOD
+catch (UserNotFoundException $e) {
+    return response()->json(['message' => $e->getMessage()], 404);
+}
+```
+
+## Testing
+
+Accompany critical changes with Feature/Unit tests.
+
+```php
+public function test_user_can_create_post() {
+    $user = User::factory()->create();
+    $response = $this->actingAs($user)->post('/posts', [
+        'title' => 'Test Post',
+        'content' => 'Content here',
+    ]);
+    $response->assertStatus(201);
+    $this->assertDatabaseHas('posts', ['title' => 'Test Post']);
+}
+```
+
+## Before Implementing
+
+1. Analyze impact and dependencies
+2. Consider alternatives and trade-offs
+3. Prioritize simplicity, readability, and project consistency
+4. Review existing patterns in the codebase before creating new ones

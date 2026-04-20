@@ -29,7 +29,7 @@ class ExcelController extends Controller
                 422
             );
         }
-        if (!$request->hasFile('file')) {
+        if ($request->hasFile('file')) {
             $file = $request->file('file');
             if (!$file || !$file->isValid()) {
                 $errorMessage = $file ? $file->getErrorMessage() : 'El archivo no se recibió correctamente.';
@@ -100,16 +100,85 @@ class ExcelController extends Controller
         if ($request->has('current')) {
             $current = $request['current'];
         }
-        $data = ExcelData::where('value', 'LIKE', '%' . $value . '%')
-            ->orderBy('value', 'asc')
-            ->select('id', 'value', 'excel_name')
+        
+        // Dividir el valor de búsqueda en palabras individuales
+        $searchTerms = array_filter(explode(' ', trim($value)));
+        
+        // Crear la consulta base
+        $query = ExcelData::query();
+        
+        // Agregar condiciones WHERE para cada palabra
+        // Esto permite buscar "jesus ramirez" y encontrar filas que contengan ambas palabras
+        foreach ($searchTerms as $term) {
+            $query->where('value', 'LIKE', '%' . $term . '%');
+        }
+        
+        $data = $query->orderBy('value', 'asc')
+            ->select('id', 'value', 'row_data', 'excel_name', 'created_at')
             ->paginate($pageSize, ['*'], 'page', $current);
+        
+        // Transformar los resultados para incluir la fila completa
+        $data->getCollection()->transform(function ($item) {
+            return [
+                'id' => $item->id,
+                'value' => $item->value, // Valor concatenado original
+                'row_data' => $item->row_data, // Array con todas las columnas de la fila
+                'excel_name' => $item->excel_name,
+                'created_at' => $item->created_at,
+            ];
+        });
+        
         return ResponseApp::success($data);
     }
 
     public function files()
     {
         return Inertia::render('admin/excel/Files');
+    }
+
+    public function preview(Request $request)
+    {
+        $excelName = trim((string) $request->query('excel_name', ''));
+
+        if ($excelName === '') {
+            abort(404, 'Archivo no encontrado.');
+        }
+
+        return Inertia::render('admin/excel/FilePreview', [
+            'excelName' => $excelName,
+        ]);
+    }
+
+    public function previewRows(Request $request)
+    {
+        $validated = $request->validate([
+            'excel_name' => ['required', 'string'],
+            'current' => ['nullable', 'integer', 'min:1'],
+            'pageSize' => ['nullable', 'integer', 'min:10', 'max:1000'],
+        ]);
+
+        $excelName = trim((string) $validated['excel_name']);
+        $current = (int) ($validated['current'] ?? 1);
+        $pageSize = (int) ($validated['pageSize'] ?? 100);
+
+        $rows = ExcelData::query()
+            ->where('excel_name', $excelName)
+            ->orderBy('id')
+            ->select('id', 'row_data', 'created_at')
+            ->paginate($pageSize, ['*'], 'page', $current);
+
+        $rows->getCollection()->transform(function (ExcelData $item) {
+            return [
+                'id' => $item->id,
+                'row_data' => is_array($item->row_data) ? array_values($item->row_data) : [],
+                'created_at' => $item->created_at,
+            ];
+        });
+
+        return ResponseApp::success([
+            'excel_name' => $excelName,
+            'rows' => $rows,
+        ]);
     }
 
     public function listFiles()

@@ -9,6 +9,10 @@ class ExcelData extends Model
     protected $fillable = [
         'value',
         'excel_name',
+        'row_data',
     ];
 
+    protected $casts = [
+        'row_data' => 'array',
+    ];
 }
