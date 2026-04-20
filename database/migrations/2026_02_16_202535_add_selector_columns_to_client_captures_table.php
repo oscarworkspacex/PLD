@@ -13,7 +13,7 @@ return new class extends Migration
     {
         if (! Schema::hasColumn('client_captures', 'anexo_path')) {
             Schema::table('client_captures', function (Blueprint $table) {
-                $table->string('anexo_path')->nullable()->after('pld_datos');
+                $table->string('anexo_path')->nullable();
             });
         }
 

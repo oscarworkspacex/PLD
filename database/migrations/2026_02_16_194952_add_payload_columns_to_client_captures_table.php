@@ -19,7 +19,7 @@ return new class extends Migration
 
         if (! Schema::hasColumn('client_captures', 'datos_identificacion')) {
             Schema::table('client_captures', function (Blueprint $table) {
-                $table->json('datos_identificacion')->nullable()->after('medio_contacto');
+                $table->json('datos_identificacion')->nullable();
             });
         }
 
@@ -43,7 +43,7 @@ return new class extends Migration
 
         if (! Schema::hasColumn('client_captures', 'pld')) {
             Schema::table('client_captures', function (Blueprint $table) {
-                $table->json('pld')->nullable()->after('garantias');
+                $table->json('pld')->nullable();
             });
         }
     }
