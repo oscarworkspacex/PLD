@@ -1,11 +1,25 @@
 <script setup lang="ts">
+import { usePage } from "@inertiajs/vue3";
+import { computed } from "vue";
+
+const page = usePage();
+const user = computed(() => page.props.auth?.user);
+
+const customLogo = computed(() => {
+    return user.value?.custom_logo 
+        ? `/storage/${user.value.custom_logo}` 
+        : "/images/ImgLiquidez.jpg";
+});
+
+const customCompanyName = computed(() => {
+    return user.value?.custom_company_name || "S.A.P.I. de C.V. SOFOM E.N.R";
+});
 </script>
 
 <template>
     <div class="flex items-center pt-2">
-        <!-- Logos en columna -->
         <div class="flex flex-col gap-3">
-            <!-- Logo Intelillaw arriba -->
+            <!-- Logo Intelillaw arriba (FIJO) -->
             <div class="flex items-center gap-3">
                 <div
                     class="flex aspect-square size-8 items-center justify-center rounded-md overflow-hidden"
@@ -19,18 +33,18 @@
                 <span class="text-xs font-semibold leading-tight">Intelillaw</span>
             </div>
             
-            <!-- Logo Liquidez abajo -->
+            <!-- Logo Personalizable (usuario puede cambiar) -->
             <div class="flex items-center gap-3">
                 <div
                     class="flex aspect-square size-8 items-center justify-center rounded-md overflow-hidden"
                 >
                     <img 
-                        src="/images/ImgLiquidez.jpg" 
-                        alt="Liquidez Logo" 
+                        :src="customLogo" 
+                        :alt="customCompanyName" 
                         class="size-full object-cover"
                     />
                 </div>
-                <span class="text-xs font-medium text-muted-foreground leading-tight">S.A.P.I. de C.V. SOFOM E.N.R</span>
+                <span class="text-xs font-medium text-muted-foreground leading-tight">{{ customCompanyName }}</span>
             </div>
         </div>
     </div>

@@ -26,6 +26,8 @@ const data = ref([]);
 const current = ref(1);
 const total = ref(0);
 const pageSize = ref(50);
+const searchListaNegraAlerta = ref<{ count: number; visible: boolean }>({ count: 0, visible: false });
+let searchListaNegraAlertoTimeout: ReturnType<typeof setTimeout> | null = null;
 const page = usePage();
 const isSaving = ref(false);
 const isLoadingCaptureForEdit = ref(false);
@@ -305,6 +307,76 @@ const selectedRiskClient = computed(() => {
 });
 
 const alertasVerticalTab = ref<'operaciones-24h' | 'operaciones-internas-preocupantes' | 'operaciones-inusuales' | 'operaciones-internas-comportamiento' | 'operaciones-relevantes' | 'listas-negras-pep' | 'bitacora-vigilancia-estricta' | 'monitor-riesgo' | 'monitor-riesgo-paises' | 'descargar-xml'>('operaciones-24h');
+
+// -- Alertas Lista Negra / PEP --
+const alertasListaNegra = ref<Array<{
+    id: number;
+    excel_name_origen: string;
+    valor_detectado: string;
+    row_data: string[] | null;
+    nombre_lista: string;
+    is_leida: boolean;
+    leida_at: string | null;
+    created_at: string;
+}>>([]);
+const isLoadingListaNegra = ref(false);
+const isMarkingListaNegraById = ref<Record<number, boolean>>({});
+const isDeletingListaNegraById = ref<Record<number, boolean>>({});
+
+const alertasListaNegraNoLeidas = computed(() =>
+    alertasListaNegra.value.filter((a) => !a.is_leida).length
+);
+
+const loadAlertasListaNegra = async () => {
+    isLoadingListaNegra.value = true;
+    try {
+        const response = await axios.get('/admin/alertas-lista-negra');
+        alertasListaNegra.value = response.data?.data ?? [];
+    } catch (error) {
+        console.error('Error al cargar alertas de lista negra:', error);
+    } finally {
+        isLoadingListaNegra.value = false;
+    }
+};
+
+const markListaNegraAsRead = async (alertaId: number) => {
+    if (isMarkingListaNegraById.value[alertaId]) return;
+    isMarkingListaNegraById.value[alertaId] = true;
+    try {
+        const response = await axios.patch(`/admin/alertas-lista-negra/${alertaId}/leida`);
+        const updated = response.data?.data;
+        if (updated) {
+            alertasListaNegra.value = alertasListaNegra.value.map((a) =>
+                a.id === alertaId ? updated : a
+            );
+        }
+    } catch (error) {
+        console.error('Error al marcar alerta como leída:', error);
+    } finally {
+        isMarkingListaNegraById.value[alertaId] = false;
+    }
+};
+
+const deleteAlertaListaNegra = async (alertaId: number) => {
+    if (!window.confirm('¿Eliminar esta alerta? Esta acción no se puede deshacer.')) return;
+    if (isDeletingListaNegraById.value[alertaId]) return;
+    isDeletingListaNegraById.value[alertaId] = true;
+    try {
+        await axios.delete(`/admin/alertas-lista-negra/${alertaId}`);
+        alertasListaNegra.value = alertasListaNegra.value.filter((a) => a.id !== alertaId);
+    } catch (error) {
+        console.error('Error al eliminar alerta:', error);
+    } finally {
+        isDeletingListaNegraById.value[alertaId] = false;
+    }
+};
+
+watch(alertasVerticalTab, (tab) => {
+    if (tab === 'listas-negras-pep') {
+        loadAlertasListaNegra();
+    }
+});
+
 const alertasGeneratedLabel = computed(() => {
     return new Intl.DateTimeFormat('es-MX', {
         day: '2-digit',
@@ -1141,10 +1213,42 @@ const handleSearch = () => {
                 pageSize: pageSize.value
             }
         }).then(response => {
-            data.value = response.data.data['data'];
-            total.value = response.data.data['total'];
-            current.value = response.data.data['current_page'];
-            pageSize.value = response.data.data['per_page'];
+            const responseData = response.data.data;
+            // El backend ahora devuelve { results: {...paginación}, alertas_generadas: N }
+            const pagination = responseData['results'] ?? responseData;
+            data.value = pagination['data'];
+            total.value = pagination['total'];
+            current.value = pagination['current_page'];
+            pageSize.value = pagination['per_page'];
+
+            // Si se encontraron coincidencias en lista negra, mostrar aviso y recargar alertas
+            // coincidencias = total hallado en lista_negra (muestra badge SIEMPRE que haya match)
+            // alertas_generadas = solo las nuevas (para saber si hay que recargar la lista)
+            const coincidencias = responseData['coincidencias'] ?? 0;
+            const alertasGeneradas = responseData['alertas_generadas'] ?? 0;
+            if (coincidencias > 0) {
+                // Cancelar timeout previo para evitar que oculte este nuevo badge
+                if (searchListaNegraAlertoTimeout !== null) {
+                    clearTimeout(searchListaNegraAlertoTimeout);
+                    searchListaNegraAlertoTimeout = null;
+                }
+                searchListaNegraAlerta.value = { count: coincidencias, visible: true };
+                loadAlertasListaNegra();
+                searchListaNegraAlertoTimeout = setTimeout(() => {
+                    searchListaNegraAlerta.value = { count: 0, visible: false };
+                    searchListaNegraAlertoTimeout = null;
+                }, 12000);
+            } else {
+                // Sin coincidencias: ocultar badge si estaba visible
+                if (searchListaNegraAlertoTimeout !== null) {
+                    clearTimeout(searchListaNegraAlertoTimeout);
+                    searchListaNegraAlertoTimeout = null;
+                }
+                searchListaNegraAlerta.value = { count: 0, visible: false };
+                if (alertasGeneradas > 0) {
+                    loadAlertasListaNegra();
+                }
+            }
         }).catch(error => {
             console.log(error);
         });
@@ -2152,7 +2256,15 @@ onMounted(async () => {
                                     : 'bg-white text-slate-700 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'"
                                 @click="alertasVerticalTab = section.id"
                             >
-                                {{ section.label }}
+                                <span class="flex items-center justify-between gap-1">
+                                    <span>{{ section.label }}</span>
+                                    <span
+                                        v-if="section.id === 'listas-negras-pep' && alertasListaNegraNoLeidas > 0"
+                                        class="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[9px] font-bold text-white"
+                                    >
+                                        {{ alertasListaNegraNoLeidas }}
+                                    </span>
+                                </span>
                             </button>
                             <button
                                 type="button"
@@ -2232,7 +2344,84 @@ onMounted(async () => {
                                     <li v-for="item in currentAlertasSection.bullets" :key="item">{{ item }}</li>
                                 </ul>
 
-                                <div class="rounded bg-sky-50 px-4 py-3 text-center text-sm font-semibold text-sky-900 dark:bg-slate-800 dark:text-sky-200">
+                                <!-- Sección especial: Listas Negras / PEP -->
+                                <template v-if="alertasVerticalTab === 'listas-negras-pep'">
+                                    <div v-if="isLoadingListaNegra" class="py-6 text-center text-sm text-slate-500 dark:text-slate-400">
+                                        Cargando alertas...
+                                    </div>
+                                    <template v-else>
+                                        <div v-if="alertasListaNegra.length === 0" class="rounded bg-sky-50 px-4 py-3 text-center text-sm font-semibold text-sky-900 dark:bg-slate-800 dark:text-sky-200">
+                                            !Sin alertas registradas!
+                                        </div>
+                                        <template v-else>
+                                            <div class="mb-3 flex items-center gap-2">
+                                                <span v-if="alertasListaNegraNoLeidas > 0" class="rounded-full bg-rose-500 px-2 py-0.5 text-xs font-bold text-white">
+                                                    {{ alertasListaNegraNoLeidas }} sin leer
+                                                </span>
+                                                <span class="text-xs text-slate-500 dark:text-slate-400">
+                                                    {{ alertasListaNegra.length }} alerta(s) total
+                                                </span>
+                                            </div>
+                                            <div class="overflow-x-auto">
+                                                <table class="w-full text-xs">
+                                                    <thead>
+                                                        <tr class="border-b border-slate-200 dark:border-slate-700 text-left">
+                                                            <th class="pb-2 pr-3 font-semibold text-slate-600 dark:text-slate-300">Nombre detectado</th>
+                                                            <th class="pb-2 pr-3 font-semibold text-slate-600 dark:text-slate-300">Excel origen</th>
+                                                            <th class="pb-2 pr-3 font-semibold text-slate-600 dark:text-slate-300">Encontrado en lista</th>
+                                                            <th class="pb-2 pr-3 font-semibold text-slate-600 dark:text-slate-300">Fecha</th>
+                                                            <th class="pb-2 font-semibold text-slate-600 dark:text-slate-300">Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr
+                                                            v-for="alerta in alertasListaNegra"
+                                                            :key="alerta.id"
+                                                            :class="[
+                                                                'border-b border-slate-100 dark:border-slate-800',
+                                                                alerta.is_leida ? 'opacity-60' : 'bg-rose-50 dark:bg-rose-900/10'
+                                                            ]"
+                                                        >
+                                                            <td class="py-2 pr-3 font-medium text-slate-800 dark:text-slate-100">
+                                                                <span v-if="!alerta.is_leida" class="mr-1 inline-block h-2 w-2 rounded-full bg-rose-500"></span>
+                                                                {{ alerta.valor_detectado }}
+                                                            </td>
+                                                            <td class="py-2 pr-3 text-slate-600 dark:text-slate-400">{{ alerta.excel_name_origen }}</td>
+                                                            <td class="py-2 pr-3 text-slate-600 dark:text-slate-400">{{ alerta.nombre_lista }}</td>
+                                                            <td class="py-2 pr-3 text-slate-500 dark:text-slate-500 whitespace-nowrap">
+                                                                {{ new Date(alerta.created_at).toLocaleDateString('es-MX') }}
+                                                            </td>
+                                                            <td class="py-2">
+                                                                <div class="flex items-center gap-1">
+                                                                    <button
+                                                                        v-if="!alerta.is_leida"
+                                                                        type="button"
+                                                                        :disabled="isMarkingListaNegraById[alerta.id]"
+                                                                        @click="markListaNegraAsRead(alerta.id)"
+                                                                        class="rounded bg-sky-600 px-2 py-1 text-[10px] text-white hover:bg-sky-700 disabled:opacity-50"
+                                                                    >
+                                                                        Marcar leída
+                                                                    </button>
+                                                                    <button
+                                                                        type="button"
+                                                                        :disabled="isDeletingListaNegraById[alerta.id]"
+                                                                        @click="deleteAlertaListaNegra(alerta.id)"
+                                                                        class="rounded bg-slate-200 px-2 py-1 text-[10px] text-slate-700 hover:bg-rose-100 hover:text-rose-700 disabled:opacity-50 dark:bg-slate-700 dark:text-slate-300"
+                                                                    >
+                                                                        Eliminar
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </template>
+
+                                <!-- Resto de secciones: mensaje genérico -->
+                                <div v-else class="rounded bg-sky-50 px-4 py-3 text-center text-sm font-semibold text-sky-900 dark:bg-slate-800 dark:text-sky-200">
                                     !Sin alertas registradas!
                                 </div>
                             </template>
@@ -2477,6 +2666,25 @@ onMounted(async () => {
                         </div>
                     </div>
                 </div>
+
+                <!-- Aviso de coincidencia en Lista Negra/PEP -->
+                <transition name="fade">
+                    <div
+                        v-if="searchListaNegraAlerta.visible"
+                        class="mb-4 flex items-start gap-3 rounded-xl border border-red-400/40 bg-red-500/10 px-5 py-4 text-red-200 shadow-lg"
+                    >
+                        <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                        </svg>
+                        <div>
+                            <p class="font-bold text-red-300">⚠ Coincidencia en Lista Negra / PEP</p>
+                            <p class="text-sm text-red-200/80 mt-0.5">
+                                Se encontraron {{ searchListaNegraAlerta.count }} coincidencia(s) en archivos de Lista Negra/PEP.
+                                Revisa la sección <strong>Alertas → Listas Negras Y De Personas Políticamente Expuestas</strong>.
+                            </p>
+                        </div>
+                    </div>
+                </transition>
 
                 <div class="mt-3">
                     <div class="card mt-3 px-0">

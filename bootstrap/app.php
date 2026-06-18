@@ -9,21 +9,23 @@ use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        commands: __DIR__.'/../routes/console.php',
-        health: '/up',
+        commands: __DIR__."/../routes/console.php",
+        health: "/up",
         using: function () {
-            Route::middleware('api')
-                ->prefix('api')
-                ->group(base_path('routes/api.php'));
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
-            Route::middleware('web')
-                ->prefix('admin')
-                ->group(base_path('routes/admin.php'));
+            Route::middleware("api")
+                ->prefix("api")
+                ->group(base_path("routes/api.php"));
+            Route::middleware("web")
+                ->group(base_path("routes/web.php"));
+            Route::middleware("web")
+                ->prefix("admin")
+                ->group(base_path("routes/admin.php"));
         }
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
+        $middleware->trustProxies(at: "*");
+
+        $middleware->encryptCookies(except: ["appearance", "sidebar_state"]);
 
         $middleware->web(append: [
             HandleAppearance::class,
@@ -32,8 +34,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-               'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-           ]);
+            "role" => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            "permission" => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            "role_or_permission" => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

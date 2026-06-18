@@ -26,3 +26,15 @@ Route::middleware('auth')->group(function () {
     Route::get('settings/two-factor', [TwoFactorAuthenticationController::class, 'show'])
         ->name('two-factor.show');
 });
+
+Route::middleware("auth")->group(function () {
+    Route::get("settings/branding", function () {
+        return Inertia::render("settings/Branding");
+    })->name("branding.edit");
+    
+    Route::post("settings/branding", [\App\Http\Controllers\Admin\UserBrandingController::class, "update"])
+        ->name("branding.update");
+    
+    Route::delete("settings/branding", [\App\Http\Controllers\Admin\UserBrandingController::class, "destroy"])
+        ->name("branding.destroy");
+});

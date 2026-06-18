@@ -15,11 +15,10 @@
                             Rusconi · Ingesta de datos
                         </p>
                         <h1 class="mt-2 text-3xl font-bold text-white lg:text-4xl">
-                            Subir y procesar archivo Excel
+                            {{ canCreate ? 'Subir y procesar archivo Excel' : 'Consultar archivos Excel' }}
                         </h1>
                         <p class="mt-2 max-w-2xl text-sm text-slate-300/90">
-                            Valida el archivo antes de subirlo. Aceptamos .xlsx, .xls y .csv
-                            hasta 20MB.
+                            {{ canCreate ? 'Valida el archivo antes de subirlo. Aceptamos .xlsx, .xls y .csv hasta 20MB.' : 'Solo tienes permisos de lectura. Contacta al administrador para subir archivos.' }}
                         </p>
                     </div>
                     <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs text-slate-200 shadow-lg shadow-cyan-500/10 backdrop-blur">
@@ -28,12 +27,13 @@
                             Operativo
                         </div>
                         <p class="mt-1 text-[11px] text-slate-300/80">
-                            Conectado al orquestador de ingesta.
+                            {{ canCreate ? 'Conectado al orquestador de ingesta.' : 'Modo solo lectura' }}
                         </p>
                     </div>
                 </div>
 
                 <div
+                    v-if="canCreate"
                     class="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl shadow-cyan-500/15 backdrop-blur"
                 >
                     <div class="border-b border-white/5 bg-white/5 px-6 py-4">
@@ -44,6 +44,41 @@
                     </div>
 
                     <form @submit.prevent="uploadFile" class="space-y-6 px-6 py-6">
+                        <!-- Toggle Lista Negra/PEP -->
+                        <div class="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-900/40 px-5 py-4">
+                            <div>
+                                <p class="text-sm font-semibold text-white">Subir como Lista Negra / PEP</p>
+                                <p class="text-xs text-slate-300/80 mt-1">
+                                    Activa esta opción si el archivo contiene nombres de personas en listas negras o personas políticamente expuestas.
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                @click="esListaNegra = !esListaNegra"
+                                :class="[
+                                    'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none',
+                                    esListaNegra ? 'bg-rose-500' : 'bg-slate-600'
+                                ]"
+                            >
+                                <span
+                                    :class="[
+                                        'inline-block h-5 w-5 transform rounded-full bg-white shadow transition duration-200 ease-in-out',
+                                        esListaNegra ? 'translate-x-5' : 'translate-x-0'
+                                    ]"
+                                />
+                            </button>
+                        </div>
+
+                        <div
+                            v-if="esListaNegra"
+                            class="rounded-2xl border border-rose-400/30 bg-rose-400/10 px-4 py-3 text-sm text-rose-100"
+                        >
+                            <p class="font-semibold">⚠ Modo Lista Negra / PEP activo</p>
+                            <p class="text-xs mt-1 text-rose-200/80">
+                                Los nombres de este archivo se cruzarán automáticamente contra los archivos de datos subidos. Se generarán alertas por cada coincidencia exacta.
+                            </p>
+                        </div>
+
                         <div class="grid gap-4 rounded-2xl border border-dashed border-white/15 bg-slate-900/40 p-5">
                             <label for="file" class="text-sm font-semibold text-white">
                                 Seleccionar archivo Excel
@@ -148,12 +183,29 @@
                         </button>
                     </form>
                 </div>
+
+                <div
+                    v-else
+                    class="overflow-hidden rounded-3xl border border-amber-400/20 bg-amber-400/10 shadow-2xl shadow-amber-500/15 backdrop-blur"
+                >
+                    <div class="px-6 py-8 text-center">
+                        <svg class="mx-auto h-12 w-12 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <h3 class="mt-4 text-lg font-semibold text-white">Sin permisos de carga</h3>
+                        <p class="mt-2 text-sm text-slate-300">
+                            Solo tienes permisos para consultar y buscar datos en los archivos Excel existentes. <br>
+                            Contacta al administrador si necesitas subir nuevos archivos.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </AppLayout>
 </template>
+
 <script lang="ts">
-import { Head as InertiaHead } from '@inertiajs/vue3';
+import { Head as InertiaHead, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
 import admin from '@/routes/admin';
 import { dashboard } from '@/routes';
@@ -178,12 +230,29 @@ export default {
             ],
             selectedFile: null as File | null,
             uploading: false,
+            esListaNegra: false,
             message: null as string | null,
             messageType: null as string | null
         }
     },
+    computed: {
+        canCreate() {
+            const page = usePage();
+            const permissions = page.props.auth?.user?.permissions || [];
+            return permissions.includes('Excel create') || page.props.auth?.user?.roles?.includes('root');
+        },
+        canDelete() {
+            const page = usePage();
+            const permissions = page.props.auth?.user?.permissions || [];
+            return permissions.includes('Excel delete') || page.props.auth?.user?.roles?.includes('root');
+        }
+    },
     methods: {
         handleFileChange(event: Event) {
+            if (!this.canCreate) {
+                this.showMessage('No tienes permisos para subir archivos', 'error');
+                return;
+            }
             const target = event.target as HTMLInputElement;
             const file = target.files?.[0];
             if (file) {
@@ -203,141 +272,92 @@ export default {
                 this.message = null;
             }
         },
-        getCsrfToken() {
-            const metaTag = document.querySelector('meta[name="csrf-token"]');
-            if (metaTag) {
-                return metaTag.getAttribute('content');
-            }
-            const name = 'XSRF-TOKEN=';
-            const cookies = document.cookie.split(';');
-            for (let cookie of cookies) {
-                cookie = cookie.trim();
-                if (cookie.indexOf(name) === 0) {
-                    return decodeURIComponent(cookie.substring(name.length));
-                }
-            }
-            return null;
-        },
         async uploadFile() {
+            if (!this.canCreate) {
+                this.showMessage('No tienes permisos para subir archivos', 'error');
+                return;
+            }
+
             this.message = null;
             if (!this.selectedFile) {
                 this.showMessage('Por favor seleccione un archivo', 'error');
                 return;
             }
-            console.log('Archivo seleccionado:', {
-                name: this.selectedFile.name,
-                size: this.selectedFile.size,
-                type: this.selectedFile.type,
-                sizeMB: (this.selectedFile.size / (1024 * 1024)).toFixed(2) + ' MB'
-            });
 
             this.uploading = true;
-            this.message = null;
             const formData = new FormData();
             formData.append('file', this.selectedFile);
-            console.log('FormData entries:');
-            for (const pair of formData.entries()) {
-                console.log(pair[0] + ': ', pair[1]);
-            }
+            formData.append('tipo', this.esListaNegra ? 'lista_negra' : 'datos');
 
-            const csrfToken = this.getCsrfToken();
-            if (!csrfToken) {
-                this.showMessage('Error: No se pudo obtener el token de seguridad', 'error');
-                this.uploading = false;
-                return;
-            }
+            // Leer XSRF-TOKEN completo (el valor puede contener '=' por ser Base64)
+            const xsrfCookie = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('XSRF-TOKEN='));
+            const xsrfToken = xsrfCookie
+                ? decodeURIComponent(xsrfCookie.substring('XSRF-TOKEN='.length))
+                : '';
 
             try {
                 const response = await axios.post(admin.excel.upload.url(), formData, {
                     headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': csrfToken,
+                        'Content-Type': 'multipart/form-data',
+                        'X-XSRF-TOKEN': xsrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
-                    transformRequest: [(data) => {
-                        return data;
-                    }],
-                    timeout: 300000, // 5 minutos para archivos grandes
+                    withCredentials: true,
+                    timeout: 300000,
                 });
-                if (response.data.success) {
-                    this.showMessage(`Archivo "${response.data['data'].excel_name}" procesado correctamente.`, 'success');
+                console.log('✅ Respuesta del servidor:', response.data);
+                if (response.data?.success === true) {
+                    const alertas = response.data?.data?.alertas_generadas ?? 0;
+                    let msg = 'Archivo procesado exitosamente.';
+                    if (alertas > 0) {
+                        msg += ` ⚠ Se generaron ${alertas} alerta(s) en Lista Negra/PEP. Revísalas en Alertas.`;
+                    }
+                    console.log('✅ Mostrando mensaje de éxito:', msg);
+                    this.showMessage(msg, 'success');
                     this.selectedFile = null;
-                    const fileInput = this.$refs.fileInput as HTMLInputElement;
-                    if (fileInput) fileInput.value = '';
+                    this.esListaNegra = false;
+                    if (this.$refs.fileInput) {
+                        (this.$refs.fileInput as HTMLInputElement).value = '';
+                    }
                 } else {
-                    this.showMessage(response.data.message || 'Error al procesar el archivo', 'error');
+                    console.error('❌ Success no es true:', response.data);
+                    this.showMessage('Error inesperado al procesar el archivo', 'error');
                 }
             } catch (error: any) {
-                console.error('=== ERROR DETALLADO ===');
                 console.error('Error completo:', error);
-                console.error('Error response data:', error.response?.data);
-                console.error('Error response status:', error.response?.status);
-                console.error('Archivo enviado:', {
-                    name: this.selectedFile?.name,
-                    size: this.selectedFile?.size,
-                    type: this.selectedFile?.type
-                });
-                console.error('========================');
-
-                if (error.response) {
-                    if (error.response.status === 422) {
-                        const responseData = error.response.data;
-                        let errorMessages = [];
-
-                        if (responseData.errors) {
-                            if (responseData.errors.file) {
-                                errorMessages = Array.isArray(responseData.errors.file)
-                                    ? responseData.errors.file
-                                    : [responseData.errors.file];
-                            } else {
-                                Object.values(responseData.errors).forEach(err => {
-                                    if (Array.isArray(err)) {
-                                        errorMessages.push(...err);
-                                    } else {
-                                        errorMessages.push(err);
-                                    }
-                                });
-                            }
-                        } else if (responseData.message) {
-                            if (Array.isArray(responseData.message)) {
-                                errorMessages = responseData.message;
-                            } else {
-                                errorMessages = [responseData.message];
-                            }
-                        }
-
-                        let finalMessage = '';
-                        if (errorMessages.length > 0) {
-                            finalMessage = errorMessages.join(', ');
-                        } else if (responseData.message === 'The file failed to upload.' || responseData.message === 'El archivo no se recibió correctamente.') {
-                            finalMessage = 'El archivo no se pudo subir. Verifique que el archivo no esté corrupto y que su conexión sea estable.';
-                        } else {
-                            finalMessage = 'Error de validación. Verifique que el archivo sea .xlsx, .xls o .csv y no exceda 20MB.';
-                        }
-
-                        this.showMessage(finalMessage, 'error');
-                    } else {
-                        const errorMessage = error.response.data?.message
-                            || (Array.isArray(error.response.data?.message)
-                                ? error.response.data.message.join(', ')
-                                : 'Error al procesar el archivo');
-                        this.showMessage(errorMessage, 'error');
-                    }
-                } else if (error.request) {
-                    this.showMessage('Error de conexión. El servidor no respondió. Verifique su conexión a internet.', 'error');
-                } else if (error.code === 'ECONNABORTED') {
-                    this.showMessage('La subida del archivo tardó demasiado. Intente con un archivo más pequeño o verifique su conexión.', 'error');
-                } else {
-                    this.showMessage('Error inesperado: ' + (error.message || 'Error desconocido'), 'error');
+                let errorMessage = 'Error al procesar el archivo';
+                if (error.response?.status === 403) {
+                    errorMessage = 'No tienes permisos para realizar esta acción';
+                } else if (error.response?.data?.errors) {
+                    const errors = error.response.data.errors;
+                    errorMessage = Object.values(errors).flat().join(' ') as string;
+                } else if (error.response?.data?.message) {
+                    errorMessage = error.response.data.message;
+                } else if (error.message) {
+                    errorMessage = error.message;
                 }
+                this.showMessage(errorMessage, 'error');
             } finally {
                 this.uploading = false;
             }
         },
-        showMessage(text: string, type: string) {
-            this.message = text;
+        showMessage(msg: string, type: string) {
+            console.log('📢 showMessage llamado:', { msg, type });
+            this.message = msg;
             this.messageType = type;
+            // Mantener el mensaje por 10 segundos para mensajes de éxito
+            if (type === 'success') {
+                setTimeout(() => {
+                    if (this.message === msg) {
+                        this.message = null;
+                        this.messageType = null;
+                    }
+                }, 10000);
+            }
         },
-        formatFileSize(bytes: number) {
+        formatFileSize(bytes: number): string {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -345,5 +365,5 @@ export default {
             return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
         }
     }
-}
+};
 </script>

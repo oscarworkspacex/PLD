@@ -1,42 +1,46 @@
 <script setup lang="ts">
-import Heading from '@/components/Heading.vue';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { toUrl, urlIsActive } from '@/lib/utils';
-import { edit as editAppearance } from '@/routes/appearance';
-import { edit as editProfile } from '@/routes/profile';
-import { show } from '@/routes/two-factor';
-import { edit as editPassword } from '@/routes/user-password';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
+import Heading from "@/components/Heading.vue";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { toUrl, urlIsActive } from "@/lib/utils";
+import { edit as editAppearance } from "@/routes/appearance";
+import { edit as editProfile } from "@/routes/profile";
+import { show } from "@/routes/two-factor";
+import { edit as editPassword } from "@/routes/user-password";
+import { type NavItem } from "@/types";
+import { Link } from "@inertiajs/vue3";
 
 const sidebarNavItems: NavItem[] = [
     {
-        title: 'Profile',
+        title: "Perfil",
         href: editProfile(),
     },
     {
-        title: 'Password',
+        title: "Contraseña",
         href: editPassword(),
     },
     {
-        title: 'Two-Factor Auth',
+        title: "Autenticación de dos factores",
         href: show(),
     },
     {
-        title: 'Appearance',
+        title: "Apariencia",
         href: editAppearance(),
+    },
+    {
+        title: "Personalización",
+        href: "/settings/branding",
     },
 ];
 
-const currentPath = typeof window !== undefined ? window.location.pathname : '';
+const currentPath = typeof window !== undefined ? window.location.pathname : "";
 </script>
 
 <template>
     <div class="px-4 py-6">
         <Heading
-            title="Settings"
-            description="Manage your profile and account settings"
+            title="Configuración"
+            description="Administra tu perfil y configuración de cuenta"
         />
 
         <div class="flex flex-col lg:flex-row lg:space-x-12">
@@ -47,7 +51,7 @@ const currentPath = typeof window !== undefined ? window.location.pathname : '';
                         :key="toUrl(item.href)"
                         variant="ghost"
                         :class="[
-                            'w-full justify-start',
+                            'w-full justify-start text-white',
                             { 'bg-muted': urlIsActive(item.href, currentPath) },
                         ]"
                         as-child

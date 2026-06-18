@@ -8,6 +8,7 @@ class ExcelData extends Model
 {
     protected $fillable = [
         'value',
+        'tipo',
         'excel_name',
         'row_data',
     ];
